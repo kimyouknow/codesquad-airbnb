@@ -24,11 +24,13 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.(ts|tsx|js|jsx)$/,
-        use: 'babel-loader',
-        exclude: /node_modules/,
-        options: {
-          getCustomTransformers: () => ({ before: [styledComponentsTransformer] }),
+        use: {
+          loader: 'ts-loader',
+          options: {
+            getCustomTransformers: () => ({ before: [styledComponentsTransformer] }),
+          },
         },
+        exclude: /node_modules/,
       },
       {
         test: /\.(sa|sc|c)ss$/i,
