@@ -1,10 +1,9 @@
 ---
 name: Bug report
 about: 버그 등록 (최대한 구체적으로 적어주세요.)
-title: ''
-labels: ''
-assignees: ''
-
+title: ""
+labels: ""
+assignees: ""
 ---
 
 ---
@@ -17,24 +16,30 @@ assignees: ''
 
 ---
 
-## 버그 내용
+## 버그 내용 및 예상 행동
 
-ex) 00 기능 클릭 시 에러 발생
+ex) 00 기능 클릭 시 에러 발생 - 클릭 시 000이 되어야함.
 
-## 원인
- 
-ex)
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## 환경
 
-## 우려 사항
+### Desktop(아래 정보를 채워주세요.)
 
-ex) 클라이언트가 화내요
+- OS: [e.g. iOS]
+- Browser: [e.g chorme, safari]
+- Version: [e.g. 22]
 
-## 스크린샷 
+### SmartPhone
+
+- Device: [e.g iPhone 13]
+- OS: [e.g. iOS8,1]
+- Browser: [e.g safari]
+- Version: [e.g. 22]
+
+## 스크린샷
 
 스크린샷 1
 
-## 기타
+## 닫는 조건
+
+- [ ]: 닫는조건1
+- [ ]: 닫는조건2
