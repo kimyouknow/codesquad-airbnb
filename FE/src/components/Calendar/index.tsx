@@ -15,6 +15,7 @@ const months = [
   'November',
   'December',
 ];
+
 const daysOfWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 export default function Calendar() {
@@ -36,7 +37,7 @@ export default function Calendar() {
   const firstDayOfWeek = isDaySunday ? sunday : computedDay;
 
   const days = orderDayByDayOfWeek(lastDay, firstDayOfWeek);
-
+  console.log(days);
   return (
     <>
       <S.CalendarTitle>{`${months[month]} ${year}`}</S.CalendarTitle>
@@ -59,5 +60,8 @@ export default function Calendar() {
 }
 
 function orderDayByDayOfWeek(lastDay: number, firstDayOfWeek: number) {
-  return Array.from({ length: lastDay }, (_, index: number) => index - firstDayOfWeek + 1);
+  return Array.from(
+    { length: lastDay + firstDayOfWeek },
+    (_, index: number) => index - firstDayOfWeek + 1,
+  );
 }
