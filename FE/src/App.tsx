@@ -1,7 +1,14 @@
-import Card from '@/components/Card';
+import LoginModal from '@/components/LoginModal';
+import useToggle from '@/hooks/useToggle';
 
 function App() {
-  return <Card content="project" msg="start" />;
+  const [isModalOpen, handleOpenModal] = useToggle(false);
+  return (
+    <div>
+      <button onClick={handleOpenModal}>로그인 모달</button>
+      <LoginModal isModalOpen={isModalOpen} handleOpenModal={handleOpenModal} />
+    </div>
+  );
 }
 
 export default App;
