@@ -8,6 +8,7 @@ interface Props {
   show: boolean;
   handleOpenModal: () => void;
 }
+
 function WindowModal({ children, show, handleOpenModal }: Props) {
   if (!show) {
     return null;

@@ -1,3 +1,5 @@
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
+const styledComponentsTransformer = createStyledComponentsTransformer();
 const { merge } = require('webpack-merge');
 
 const common = require('./webpack.common');
@@ -23,6 +25,9 @@ module.exports = merge(common, {
         test: /\.(ts|tsx|js|jsx)$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+        options: {
+          getCustomTransformers: () => ({ before: [styledComponentsTransformer] }),
+        },
       },
       {
         test: /\.(sa|sc|c)ss$/i,

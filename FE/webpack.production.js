@@ -1,3 +1,7 @@
+/* eslint-disable import/order */
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
+const styledComponentsTransformer = createStyledComponentsTransformer();
+
 const path = require('path');
 
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
@@ -22,6 +26,9 @@ module.exports = merge(common, {
         test: /\.(ts|tsx|js|jsx)$/,
         use: 'babel-loader',
         exclude: /node_modules/,
+        options: {
+          getCustomTransformers: () => ({ before: [styledComponentsTransformer] }),
+        },
       },
       {
         test: /\.(sa|sc|c)ss$/i,

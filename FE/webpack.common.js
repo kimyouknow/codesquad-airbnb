@@ -2,9 +2,7 @@ const path = require('path');
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
 const webpack = require('webpack');
-const styledComponentsTransformer = createStyledComponentsTransformer();
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
@@ -16,15 +14,7 @@ module.exports = {
   },
   entry: `${path.resolve(__dirname, 'src')}/index.tsx`,
   module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        loader: 'ts-loader',
-        options: {
-          getCustomTransformers: () => ({ before: [styledComponentsTransformer] }),
-        },
-      },
-    ],
+    rules: [],
   },
   plugins: [
     new HtmlWebpackPlugin({
