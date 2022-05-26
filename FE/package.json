@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config config/webpack.development.js",
-    "prod": "webpack-dev-server --config config/webpack.production.js",
-    "build:dev": "webpack --config config/webpack.development.js",
-    "build:prod": "webpack --config config/webpack.production.js",
+    "dev": "webpack-dev-server --config webpack.development.js",
+    "prod": "webpack-dev-server --config webpack.production.js",
+    "build:dev": "webpack --config webpack.development.js",
+    "build:prod": "webpack --config webpack.production.js",
     "lint": "npx eslint --init"
   },
   "repository": {
