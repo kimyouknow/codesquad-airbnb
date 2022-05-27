@@ -1,13 +1,15 @@
-import LoginModal from '@/components/LoginModal';
+import CalendarModal from '@/components/CalendarModal';
 import useToggle from '@/hooks/useToggle';
 
 function App() {
   const [isModalOpen, handleOpenModal] = useToggle(false);
   return (
-    <div>
-      <button onClick={handleOpenModal}>로그인 모달</button>
-      <LoginModal isModalOpen={isModalOpen} handleOpenModal={handleOpenModal} />
-    </div>
+    <>
+      <div>
+        <button onClick={handleOpenModal}>캘린더 모달</button>
+        <CalendarModal isModalOpen={isModalOpen} handleOpenModal={handleOpenModal} />
+      </div>
+    </>
   );
 }
 

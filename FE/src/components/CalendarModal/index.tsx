@@ -1,3 +1,5 @@
+import Calendar from '@/components/Calendar';
+
 import WindowModal from '../WindowModal';
 
 interface Props {
@@ -5,10 +7,11 @@ interface Props {
   handleOpenModal: () => void;
 }
 
-export default function LoginModal({ isModalOpen, handleOpenModal }: Props) {
+export default function CalendarModal({ isModalOpen, handleOpenModal }: Props) {
   return (
     <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
-      <button type="button">msw 임시 로그인 버튼</button>
+      <div>Calendar</div>
+      <Calendar />
     </WindowModal>
   );
 }
