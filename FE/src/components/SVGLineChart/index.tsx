@@ -16,6 +16,7 @@ const data = [
 export default function SVGLineChart() {
   const points = data
     .map(element => {
+      // svg에 표시할 때 px단위가 아니어서 비율로 계산
       const x = (element.x / 6) * 100;
       const y = 100 - (element.y / 500) * 100;
 
