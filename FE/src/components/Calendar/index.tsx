@@ -1,22 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+import { months, daysOfWeek } from '@/constants/constants';
+
 import * as S from './style';
-
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-const daysOfWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 export default function Calendar() {
   const overDay = 32;
@@ -37,7 +22,7 @@ export default function Calendar() {
   const firstDayOfWeek = isDaySunday ? sunday : computedDay;
 
   const days = orderDayByDayOfWeek(lastDay, firstDayOfWeek);
-  console.log(days);
+
   return (
     <>
       <S.CalendarTitle>{`${months[month]} ${year}`}</S.CalendarTitle>
