@@ -1,3 +1,7 @@
+/* eslint-disable import/order */
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components').default;
+const styledComponentsTransformer = createStyledComponentsTransformer();
+
 const path = require('path');
 
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
@@ -12,7 +16,7 @@ module.exports = merge(common, {
   devtool: 'cheap-module-source-map',
   output: {
     filename: '[name].[contenthash].js',
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     clean: true,
   },
@@ -20,7 +24,12 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.(ts|tsx|js|jsx)$/,
-        use: 'babel-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            getCustomTransformers: () => ({ before: [styledComponentsTransformer] }),
+          },
+        },
         exclude: /node_modules/,
       },
       {

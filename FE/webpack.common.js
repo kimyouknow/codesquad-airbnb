@@ -8,17 +8,17 @@ const webpack = require('webpack');
 module.exports = {
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '../src'),
+      '@': path.resolve(__dirname, 'src'),
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.css'],
   },
-  entry: `${path.resolve(__dirname, '../src')}/index.tsx`,
+  entry: `${path.resolve(__dirname, 'src')}/index.tsx`,
   module: {
     rules: [],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: `${path.resolve(__dirname, '../public')}/index.html`,
+      template: `${path.resolve(__dirname, 'public')}/index.html`,
     }),
     new webpack.ProvidePlugin({ React: 'react' }),
     new ReactRefreshWebpackPlugin(),
