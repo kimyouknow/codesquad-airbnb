@@ -31,7 +31,7 @@ interface RenderDatesProps {
 export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
   const dates = renderCalendar({ activeYear, activeMonth });
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <S.Container>
       <S.CalendarTitle>{`${months[activeMonth]} ${activeYear}`}</S.CalendarTitle>
       <S.WeekContainer>
         {daysOfWeek.map(day => (
@@ -45,7 +45,7 @@ export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
           </S.DayItem>
         ))}
       </S.WeekContainer>
-    </div>
+    </S.Container>
   );
 }
 
