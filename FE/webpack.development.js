@@ -13,7 +13,7 @@ module.exports = merge(common, {
     compress: true,
     port: 3000,
     historyApiFallback: true,
-    liveReload: true,
+    liveReload: false,
   },
   output: {
     filename: '[name].[contenthash].js',
