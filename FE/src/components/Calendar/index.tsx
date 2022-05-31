@@ -8,15 +8,16 @@ interface CalendarProps {
   activeMonth: number;
 }
 
+// TODO: interface DateProps하나에서 extends해서 확장해서 써보기
 interface DateProps {
   year: number;
   month: number;
   date: number;
+  isAciveMonth: boolean;
 }
 
 interface RenderDateProps extends DateProps {
   id: Date;
-  isAciveMonth: boolean;
 }
 
 interface RenderDatesProps {
@@ -38,6 +39,7 @@ export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
         ))}
       </S.WeekContainer>
       <S.WeekContainer>
+        {/* FIXME: 키 값 겹치는 에러 수정하기 */}
         {dates.map(({ id, date, isAciveMonth }) => (
           <S.DayItem isAciveMonth={isAciveMonth} key={id}>
             {date}
@@ -77,6 +79,7 @@ function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<Rende
   return prevMonthDates.concat(currentMonthDates, nextMonthDates);
 }
 
+// TODO: 6 (getDay()로 얻은 토요일 값): 매직넘버 수정하기
 function renderPrevMonthLastWeek(
   prevMonthLastDay: number,
   prevMonthLastDate: number,
@@ -112,23 +115,30 @@ function renderNextMonthFirstWeek(
   return [];
 }
 
-function renderDates({ length, year, month, addedDate }: RenderDatesProps): Array<RenderDateProps> {
+function renderDates({
+  length,
+  year,
+  month,
+  addedDate,
+  isAciveMonth,
+}: RenderDatesProps): Array<RenderDateProps> {
   // TODO: //  RenderDateProps[] 배열 타입 지정 고려해보기
   return Array.from({ length }, (v, i) =>
     renderDate({
       year,
       month,
       date: i + 1 + addedDate,
+      isAciveMonth,
     }),
   );
 }
 
-function renderDate({ year, month, date }: DateProps): RenderDateProps {
+function renderDate({ year, month, date, isAciveMonth }: DateProps): RenderDateProps {
   return {
     id: new Date(year, month, date),
     year,
     month,
     date,
-    isAciveMonth: false,
+    isAciveMonth,
   };
 }
