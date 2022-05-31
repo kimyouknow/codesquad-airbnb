@@ -1,14 +1,12 @@
 import styled from 'styled-components';
 
-import { CANVAS_WIDTH, CANVAS_HEIGHT } from './constants';
+import containerSize from './mixins';
 
 export const CanvasContainer = styled.div`
-  width: ${CANVAS_WIDTH}px;
-  height: ${CANVAS_HEIGHT}px;
+  ${containerSize}
 `;
 
 export const Canvas = styled.canvas`
-  width: ${CANVAS_WIDTH}px;
-  height: ${CANVAS_HEIGHT}px;
+  ${containerSize}
   border: 3px solid #ccc;
 `;
