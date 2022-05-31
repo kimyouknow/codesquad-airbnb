@@ -1,7 +1,7 @@
 import { useEffect, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
-interface Props {
+interface PortalProps {
   children: ReactNode;
 }
 
@@ -14,7 +14,7 @@ function createWrapperAndAppendToBody(wrapperId: string) {
   return wrapperElement;
 }
 
-function Potal({ children }: Props) {
+function Potal({ children }: PortalProps) {
   useEffect(() => {
     // 화면 스크롤 방지
     document.body.style.cssText = `position: fixed; top: -${window.scrollY}px`;

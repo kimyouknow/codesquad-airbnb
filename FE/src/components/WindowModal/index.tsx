@@ -3,13 +3,13 @@ import { ReactNode } from 'react';
 import Potal from './Portal';
 import * as S from './style';
 
-interface Props {
+interface WindowModalProps {
   children: ReactNode;
   show: boolean;
   handleOpenModal: () => void;
 }
 
-function WindowModal({ children, show, handleOpenModal }: Props) {
+function WindowModal({ children, show, handleOpenModal }: WindowModalProps) {
   if (!show) {
     return null;
   }
