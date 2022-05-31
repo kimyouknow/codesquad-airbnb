@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable no-use-before-define */
 import { months, daysOfWeek } from '@/constants/constants';
 
 import * as S from './style';
@@ -50,7 +51,7 @@ export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
   );
 }
 
-function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<RenderDateProps> {
+const renderCalendar = ({ activeYear, activeMonth }: CalendarProps): Array<RenderDateProps> => {
   const prevMonthLastFullDate = new Date(activeYear, activeMonth, 0);
   const prevMonthLastDay = prevMonthLastFullDate.getDay();
   const prevMonthLastDate = prevMonthLastFullDate.getDate();
@@ -63,7 +64,7 @@ function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<Rende
     prevMonthLastDay,
     prevMonthLastDate,
     activeYear,
-    activeMonth,
+    activeMonth - 1,
   );
 
   const currentMonthDates = renderDates({
@@ -77,15 +78,15 @@ function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<Rende
   const nextMonthDates = renderNextMonthFirstWeek(activeMonthLastDay, activeYear, activeMonth + 1);
 
   return prevMonthDates.concat(currentMonthDates, nextMonthDates);
-}
+};
 
 // TODO: 6 (getDay()로 얻은 토요일 값): 매직넘버 수정하기
-function renderPrevMonthLastWeek(
+const renderPrevMonthLastWeek = (
   prevMonthLastDay: number,
   prevMonthLastDate: number,
   year: number,
   month: number,
-): Array<RenderDateProps> {
+): Array<RenderDateProps> => {
   if (prevMonthLastDay !== 6) {
     return renderDates({
       length: prevMonthLastDay + 1,
@@ -96,13 +97,13 @@ function renderPrevMonthLastWeek(
     });
   }
   return [];
-}
+};
 
-function renderNextMonthFirstWeek(
+const renderNextMonthFirstWeek = (
   activeMonthLastDay: number,
   year: number,
   month: number,
-): Array<RenderDateProps> {
+): Array<RenderDateProps> => {
   if (activeMonthLastDay !== 6) {
     return renderDates({
       length: 6 - activeMonthLastDay,
@@ -113,17 +114,16 @@ function renderNextMonthFirstWeek(
     });
   }
   return [];
-}
+};
 
-function renderDates({
+const renderDates = ({
   length,
   year,
   month,
   addedDate,
   isAciveMonth,
-}: RenderDatesProps): Array<RenderDateProps> {
-  // TODO: //  RenderDateProps[] 배열 타입 지정 고려해보기
-  return Array.from({ length }, (v, i) =>
+}: RenderDatesProps): Array<RenderDateProps> =>
+  Array.from({ length }, (v, i) =>
     renderDate({
       year,
       month,
@@ -131,14 +131,11 @@ function renderDates({
       isAciveMonth,
     }),
   );
-}
 
-function renderDate({ year, month, date, isAciveMonth }: DateProps): RenderDateProps {
-  return {
-    id: new Date(year, month, date),
-    year,
-    month,
-    date,
-    isAciveMonth,
-  };
-}
+const renderDate = ({ year, month, date, isAciveMonth }: DateProps): RenderDateProps => ({
+  id: new Date(year, month, date),
+  year,
+  month,
+  date,
+  isAciveMonth,
+});
