@@ -14,8 +14,8 @@ export const ModalWrapper = styled.div`
 export const ModalContainer = styled.div`
   margin-top: 200px;
   display: inline-block;
-  width: 440px;
-  height: 440px;
+  /* width: 440px;
+  height: 440px; */
   background: white;
   border: 1px solid black;
   z-index: 1012;
