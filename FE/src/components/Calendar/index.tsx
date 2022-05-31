@@ -3,50 +3,132 @@ import { months, daysOfWeek } from '@/constants/constants';
 
 import * as S from './style';
 
-export default function Calendar() {
-  const overDay = 32;
-  const targetDay = 1;
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const lastDay = overDay - new Date(year, month, overDay).getDate();
-  const originDay = new Date(year, month, targetDay).getDay();
-  const computedDay = originDay - 1;
-  const sunday = 6;
-  const isDaySunday = computedDay < 0;
-  /* firstDayOfWeek
-   0  1  2  3  4  5  6
-   일 월 화 수 목 금 토
- ->월 화 수 목 금 토 일
-  */
-  const firstDayOfWeek = isDaySunday ? sunday : computedDay;
+interface CalendarProps {
+  activeYear: number;
+  activeMonth: number;
+}
 
-  const days = orderDayByDayOfWeek(lastDay, firstDayOfWeek);
+interface DateProps {
+  year: number;
+  month: number;
+  date: number;
+}
 
+interface RenderDateProps extends DateProps {
+  id: Date;
+  isAciveMonth: boolean;
+}
+
+interface RenderDatesProps {
+  year: number;
+  month: number;
+  length: number;
+  addedDate: number;
+  isAciveMonth: boolean;
+}
+
+export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
+  const dates = renderCalendar({ activeYear, activeMonth });
   return (
-    <>
-      <S.CalendarTitle>{`${months[month]} ${year}`}</S.CalendarTitle>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <S.CalendarTitle>{`${months[activeMonth]} ${activeYear}`}</S.CalendarTitle>
       <S.WeekContainer>
         {daysOfWeek.map(day => (
           <S.DayItem key={`day-${day}`}>{day}</S.DayItem>
         ))}
       </S.WeekContainer>
       <S.WeekContainer>
-        {days.map((day, index) =>
-          index < firstDayOfWeek ? (
-            <S.DayItem key={`day-${index}`}></S.DayItem>
-          ) : (
-            <S.DayItem key={`day-${index}`}>{day}</S.DayItem>
-          ),
-        )}
+        {dates.map(({ id, date, isAciveMonth }) => (
+          <S.DayItem isAciveMonth={isAciveMonth} key={id}>
+            {date}
+          </S.DayItem>
+        ))}
       </S.WeekContainer>
-    </>
+    </div>
   );
 }
 
-function orderDayByDayOfWeek(lastDay: number, firstDayOfWeek: number) {
-  return Array.from(
-    { length: lastDay + firstDayOfWeek },
-    (_, index: number) => index - firstDayOfWeek + 1,
+function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<RenderDateProps> {
+  const prevMonthLastFullDate = new Date(activeYear, activeMonth, 0);
+  const prevMonthLastDay = prevMonthLastFullDate.getDay();
+  const prevMonthLastDate = prevMonthLastFullDate.getDate();
+
+  const activeMonthLastFullDate = new Date(activeYear, activeMonth + 1, 0);
+  const activeMonthLastDay = activeMonthLastFullDate.getDay();
+  const activeMonthLastDate = activeMonthLastFullDate.getDate();
+
+  const prevMonthDates = renderPrevMonthLastWeek(
+    prevMonthLastDay,
+    prevMonthLastDate,
+    activeYear,
+    activeMonth,
   );
+
+  const currentMonthDates = renderDates({
+    length: activeMonthLastDate,
+    year: activeYear,
+    month: activeMonth,
+    addedDate: 0,
+    isAciveMonth: true,
+  });
+
+  const nextMonthDates = renderNextMonthFirstWeek(activeMonthLastDay, activeYear, activeMonth + 1);
+
+  return prevMonthDates.concat(currentMonthDates, nextMonthDates);
+}
+
+function renderPrevMonthLastWeek(
+  prevMonthLastDay: number,
+  prevMonthLastDate: number,
+  year: number,
+  month: number,
+): Array<RenderDateProps> {
+  if (prevMonthLastDay !== 6) {
+    return renderDates({
+      length: prevMonthLastDay + 1,
+      year,
+      month,
+      addedDate: prevMonthLastDate - prevMonthLastDay - 1,
+      isAciveMonth: false,
+    });
+  }
+  return [];
+}
+
+function renderNextMonthFirstWeek(
+  activeMonthLastDay: number,
+  year: number,
+  month: number,
+): Array<RenderDateProps> {
+  if (activeMonthLastDay !== 6) {
+    return renderDates({
+      length: 6 - activeMonthLastDay,
+      year,
+      month,
+      addedDate: 0,
+      isAciveMonth: false,
+    });
+  }
+  return [];
+}
+
+function renderDates({ length, year, month, addedDate }: RenderDatesProps): Array<RenderDateProps> {
+  // TODO: //  RenderDateProps[] 배열 타입 지정 고려해보기
+  return Array.from({ length }, (v, i) =>
+    renderDate({
+      year,
+      month,
+      date: i + 1 + addedDate,
+    }),
+  );
+}
+
+function renderDate({ year, month, date }: DateProps): RenderDateProps {
+  return {
+    id: new Date(year, month, date),
+    year,
+    month,
+    date,
+    isAciveMonth: false,
+  };
 }
