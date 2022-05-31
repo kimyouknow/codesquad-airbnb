@@ -5,6 +5,15 @@ interface Props {
   children: ReactNode;
 }
 
+// 출처 : https://blog.logrocket.com/build-modal-with-react-portals/
+function createWrapperAndAppendToBody(wrapperId: string) {
+  const wrapperElement = document.createElement('div');
+  wrapperElement.setAttribute('id', wrapperId);
+  document.body.appendChild(wrapperElement);
+
+  return wrapperElement;
+}
+
 function Potal({ children }: Props) {
   useEffect(() => {
     // 화면 스크롤 방지
@@ -17,8 +26,13 @@ function Potal({ children }: Props) {
     };
   }, []);
 
-  const rootElement: Element | DocumentFragment | null = document.getElementById('modal');
-  return rootElement && createPortal(children, rootElement); //Todo : null일때 모달 실행 안되도록 에러처리
+  let rootElement = document.getElementById('modal');
+
+  if (!rootElement) {
+    rootElement = createWrapperAndAppendToBody('modal');
+  }
+
+  return rootElement && createPortal(children, rootElement);
 }
 
 export default Potal;
