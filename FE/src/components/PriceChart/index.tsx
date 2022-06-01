@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable no-use-before-define */
 import { useEffect, useLayoutEffect, useRef } from 'react';
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from '@/components/PriceChart/constants';
