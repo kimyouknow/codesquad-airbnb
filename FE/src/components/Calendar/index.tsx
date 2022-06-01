@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-use-before-define */
-import { months, daysOfWeek, saturdayToNumber } from '@/constants/constants';
+import { months, daysOfWeek, saturdayNumber } from '@/constants/constants';
 
 import * as S from './style';
 
@@ -12,24 +12,24 @@ interface CalendarProps {
 interface DateProps {
   year: number;
   month: number;
-  date: number;
   isAciveMonth: boolean;
+  date: number;
 }
 
-interface RenderDateProps extends DateProps {
+interface CalendarDateProps extends DateProps {
   id: Date;
 }
 
-interface RenderDatesProps {
+interface DatesProps {
   year: number;
   month: number;
+  isAciveMonth: boolean;
   length: number;
   addedDate: number;
-  isAciveMonth: boolean;
 }
 
 export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
-  const dates = renderCalendar({ activeYear, activeMonth });
+  const dates = getCalendarInfo({ activeYear, activeMonth });
   return (
     <S.Container>
       <S.CalendarTitle>{`${months[activeMonth]} ${activeYear}`}</S.CalendarTitle>
@@ -49,7 +49,7 @@ export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
   );
 }
 
-const renderCalendar = ({ activeYear, activeMonth }: CalendarProps): Array<RenderDateProps> => {
+const getCalendarInfo = ({ activeYear, activeMonth }: CalendarProps): CalendarDateProps[] => {
   const prevMonthLastFullDate = new Date(activeYear, activeMonth, 0);
   const prevMonthLastDay = prevMonthLastFullDate.getDay();
   const prevMonthLastDate = prevMonthLastFullDate.getDate();
@@ -58,14 +58,14 @@ const renderCalendar = ({ activeYear, activeMonth }: CalendarProps): Array<Rende
   const activeMonthLastDay = activeMonthLastFullDate.getDay();
   const activeMonthLastDate = activeMonthLastFullDate.getDate();
 
-  const prevMonthDates = renderPrevMonthLastWeek(
+  const prevMonthDates = getPrevMonthLastWeek(
     prevMonthLastDay,
     prevMonthLastDate,
     activeYear,
     activeMonth - 1,
   );
 
-  const currentMonthDates = renderDates({
+  const currentMonthDates = getDates({
     length: activeMonthLastDate,
     year: activeYear,
     month: activeMonth,
@@ -73,19 +73,19 @@ const renderCalendar = ({ activeYear, activeMonth }: CalendarProps): Array<Rende
     isAciveMonth: true,
   });
 
-  const nextMonthDates = renderNextMonthFirstWeek(activeMonthLastDay, activeYear, activeMonth + 1);
+  const nextMonthDates = getNextMonthFirstWeek(activeMonthLastDay, activeYear, activeMonth + 1);
 
   return prevMonthDates.concat(currentMonthDates, nextMonthDates);
 };
 
-const renderPrevMonthLastWeek = (
+const getPrevMonthLastWeek = (
   prevMonthLastDay: number,
   prevMonthLastDate: number,
   year: number,
   month: number,
-): Array<RenderDateProps> =>
+): CalendarDateProps[] =>
   isSaturDay(prevMonthLastDay)
-    ? renderDates({
+    ? getDates({
         length: prevMonthLastDay + 1,
         year,
         month,
@@ -94,14 +94,14 @@ const renderPrevMonthLastWeek = (
       })
     : [];
 
-const renderNextMonthFirstWeek = (
+const getNextMonthFirstWeek = (
   activeMonthLastDay: number,
   year: number,
   month: number,
-): Array<RenderDateProps> =>
+): CalendarDateProps[] =>
   isSaturDay(activeMonthLastDay)
-    ? renderDates({
-        length: saturdayToNumber - activeMonthLastDay,
+    ? getDates({
+        length: saturdayNumber - activeMonthLastDay,
         year,
         month,
         addedDate: 0,
@@ -109,15 +109,15 @@ const renderNextMonthFirstWeek = (
       })
     : [];
 
-const renderDates = ({
+const getDates = ({
   length,
   year,
   month,
   addedDate,
   isAciveMonth,
-}: RenderDatesProps): Array<RenderDateProps> =>
+}: DatesProps): CalendarDateProps[] =>
   Array.from({ length }, (_, i) =>
-    renderDate({
+    getDate({
       year,
       month,
       date: i + addedDate + 1,
@@ -125,7 +125,7 @@ const renderDates = ({
     }),
   );
 
-const renderDate = ({ year, month, date, isAciveMonth }: DateProps): RenderDateProps => ({
+const getDate = ({ year, month, date, isAciveMonth }: DateProps): CalendarDateProps => ({
   id: new Date(year, month, date),
   year,
   month,
@@ -133,4 +133,4 @@ const renderDate = ({ year, month, date, isAciveMonth }: DateProps): RenderDateP
   isAciveMonth,
 });
 
-const isSaturDay = (numberOfDay: number) => numberOfDay !== saturdayToNumber;
+const isSaturDay = (numberOfDay: number) => numberOfDay !== saturdayNumber;
