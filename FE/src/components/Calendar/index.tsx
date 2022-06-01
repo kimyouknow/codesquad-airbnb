@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable no-use-before-define */
 import { months, daysOfWeek, saturdayNumber } from '@/constants/constants';
 
 import * as S from './style';
