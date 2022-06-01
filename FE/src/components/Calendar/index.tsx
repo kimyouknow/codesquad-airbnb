@@ -17,7 +17,7 @@ interface DateProps {
 }
 
 interface CalendarDateProps extends DateProps {
-  id: Date;
+  id: string;
 }
 
 interface DatesProps {
@@ -126,7 +126,7 @@ const getDates = ({
   );
 
 const getDate = ({ year, month, date, isAciveMonth }: DateProps): CalendarDateProps => ({
-  id: new Date(year, month, date),
+  id: `${year}-${month}-${date}`,
   year,
   month,
   date,
