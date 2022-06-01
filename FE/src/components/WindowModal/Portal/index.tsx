@@ -1,11 +1,20 @@
 import { useEffect, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
-interface Props {
+interface PortalProps {
   children: ReactNode;
 }
 
-function Potal({ children }: Props) {
+// 출처 : https://blog.logrocket.com/build-modal-with-react-portals/
+function createWrapperAndAppendToBody(wrapperId: string) {
+  const wrapperElement = document.createElement('div');
+  wrapperElement.setAttribute('id', wrapperId);
+  document.body.appendChild(wrapperElement);
+
+  return wrapperElement;
+}
+
+function Potal({ children }: PortalProps) {
   useEffect(() => {
     // 화면 스크롤 방지
     document.body.style.cssText = `position: fixed; top: -${window.scrollY}px`;
@@ -17,8 +26,13 @@ function Potal({ children }: Props) {
     };
   }, []);
 
-  const rootElement: Element | DocumentFragment | null = document.getElementById('modal');
-  return rootElement && createPortal(children, rootElement); //Todo : null일때 모달 실행 안되도록 에러처리
+  let rootElement = document.getElementById('modal');
+
+  if (!rootElement) {
+    rootElement = createWrapperAndAppendToBody('modal');
+  }
+
+  return rootElement && createPortal(children, rootElement);
 }
 
 export default Potal;
