@@ -50,6 +50,13 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     setMinXThumb(newValue);
   };
 
+  const leftIndex = xDataset.findIndex(element => element === minXThumb);
+  const leftY = yDataset[leftIndex];
+
+  const revisedRigthX = getRevisedX(maxXThumb, maximumX, CANVAS_WIDTH);
+  const revisedLeftX = getRevisedX(minXThumb, maximumX, CANVAS_WIDTH);
+  const revisedLeftY = getRevisedY(leftY, maximumY, CANVAS_HEIGHT);
+
   return (
     <S.CanvasContainer>
       <Chart
@@ -60,6 +67,7 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
         minXThumb={minXThumb}
         maxXThumb={maxXThumb}
         size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+        revisedValues={{ revisedRigthX, revisedLeftX, revisedLeftY }}
       />
       <label>최소</label>
       <input
@@ -83,3 +91,9 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     </S.CanvasContainer>
   );
 }
+
+const getRevisedX = (rawX: number, currentMaximumX: number, width: number): number =>
+  (rawX / currentMaximumX) * width;
+
+const getRevisedY = (rawY: number, currentMaximumY: number, height: number): number =>
+  height - (rawY / currentMaximumY) * height;

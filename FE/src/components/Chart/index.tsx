@@ -11,6 +11,11 @@ export interface ChartProps {
     width: number;
     height: number;
   };
+  revisedValues: {
+    revisedRigthX: number;
+    revisedLeftX: number;
+    revisedLeftY: number;
+  };
 }
 
 const START_X = 0;
@@ -23,9 +28,12 @@ export default function Chart({
   minXThumb,
   maxXThumb,
   size,
+  revisedValues,
 }: ChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { width, height } = size;
+  const { revisedRigthX, revisedLeftX, revisedLeftY } = revisedValues;
+
   const renderCanvas = () => {
     if (!canvasRef.current) {
       return;
@@ -64,14 +72,9 @@ export default function Chart({
     context.beginPath();
 
     const leftIndex = xDataset.findIndex(element => element === leftX);
-    const leftY = yDataset[leftIndex];
 
     const newXDataset = xDataset.filter(x => leftX <= x && x <= rigthX);
     const newYDataset = yDataset.filter((_, index) => index >= leftIndex);
-
-    const revisedRigthX = getRevisedX(rigthX, maximumX, width);
-    const revisedLeftX = getRevisedX(leftX, maximumX, width);
-    const revisedLeftY = getRevisedY(leftY, maximumY, height);
 
     context.moveTo(revisedLeftX, revisedLeftY);
     setPositions(context, newXDataset, newYDataset, maximumX, maximumY, width, height);
