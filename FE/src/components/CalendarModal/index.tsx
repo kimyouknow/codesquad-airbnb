@@ -25,7 +25,6 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
     activeMonth + 1,
     activeMonth + 2,
     activeMonth + 3,
-    activeMonth + 4,
   ]);
   const [nextCount, setNextCount] = useState(1);
   const [isSlide, setIsSlide] = useState(false);
@@ -36,8 +35,8 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
 
   const divide = months.length - 1;
   const currentMonthOrder = 1;
-  const lastMonthOrder = 4;
-  const increasedMonth = 3;
+  const lastMonthOrder = divide - 1;
+  const increasedMonth = divide - 2;
   const itemGap = 26;
 
   const handleClickNextCalendar = () => {
