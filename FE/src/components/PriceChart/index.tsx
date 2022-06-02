@@ -34,6 +34,13 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
     setMaxXThumb(Number(value));
   };
 
+  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+    setMinXThumb(Number(value));
+  };
+
   const renderCanvas = () => {
     if (!canvasRef.current) {
       return;
@@ -54,8 +61,8 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
 
     context.beginPath();
     context.strokeStyle = 'rgba(0, 0, 0, 0)';
-    context.moveTo(START_X, CANVAS_HEIGHT); // 시작점(좌하단)으로 이동
 
+    context.moveTo(START_X, CANVAS_HEIGHT);
     setPositions(context, xDataset, yDataset, maximumX, maximumY);
 
     context.stroke();
@@ -68,18 +75,24 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
     }
     const canvas: HTMLCanvasElement = canvasRef.current;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+
     context.beginPath();
 
-    context.strokeStyle = 'tomato';
-    context.lineWidth = 4;
+    const leftIndex = xDataset.findIndex(element => element === leftX);
+    const leftY = yDataset[leftIndex];
 
-    const newXDataset = xDataset.filter(x => x <= rigthX);
-    setPositions(context, newXDataset, yDataset, maximumX, maximumY);
+    const newXDataset = xDataset.filter(x => leftX <= x && x <= rigthX);
+    const newYDataset = yDataset.filter((_, index) => index >= leftIndex);
+
+    const rigthXRatio = caculateXRatio(rigthX, maximumX);
+    const leftXRatio = caculateXRatio(leftX, maximumX);
+    const leftYRatio = caculateYRatio(leftY, maximumY);
+
+    context.moveTo(leftXRatio, leftYRatio);
+    setPositions(context, newXDataset, newYDataset, maximumX, maximumY);
     context.stroke();
 
-    // TODO: 바뀐 값에 따라 라인이 업데이트되면 이후에 색칠로직 구현하기
-    // const xRatio = caculateXRatio(rigthX, maximumX);
-    // fillContext(context, leftX, rigthX, 'tomato');
+    fillContext(context, leftXRatio, rigthXRatio, 'tomato');
   };
 
   useEffect(() => {
@@ -94,6 +107,17 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
   return (
     <S.CanvasContainer>
       <S.Canvas ref={canvasRef}></S.Canvas>
+      <label>최소</label>
+      <input
+        type="range"
+        value={minXThumb}
+        step={10_000} // FIXME: 간격 계산해서 매직넘버 없애기
+        min={0}
+        max={maxXThumb}
+        onChange={handleMinPriceChange}
+      />
+      <br />
+      <label>최대</label>
       <input
         type="range"
         value={maxXThumb}
@@ -118,7 +142,6 @@ const setPositions = (
   maximumX: number,
   maximumY: number,
 ) => {
-  context.moveTo(START_X, CANVAS_HEIGHT);
   xDataset.forEach((rawX, index) => {
     const rawY = yDataset[index];
     const x = caculateXRatio(rawX, maximumX);
