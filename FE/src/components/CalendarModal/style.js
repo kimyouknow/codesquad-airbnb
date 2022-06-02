@@ -4,6 +4,8 @@ import styled from 'styled-components';
 export const CalendarContainer = styled.div`
   width: 440px;
   height: 440px;
+  display: 'flex';
+  gap: '12px';
 `;
 
 export const Wrapper = styled.div`

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useEffect, useState } from 'react';
 
 import Calendar from '@/components/Calendar';
@@ -66,21 +65,22 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   return (
     <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
       <S.CalendarContainer>
-        {/* TODO: div태그 styled로 변경 */}
-        <div style={{ display: 'flex', gap: '12px' }}>
-          {/* TODO: activeMonth + magic number 수정하기 */}
-          <button type="button" onClick={handleClickPreviousCalendar}></button>
-          <div style={{ overflow: 'hidden' }}>
-            <S.ItemContainer nextCount={nextCount} transtion={transtion} divide={divide}>
-              {months.map(currentActiveMonth => (
-                <S.Item key={`activeMonth-${currentActiveMonth}`} itemGap={itemGap}>
-                  <Calendar activeMonth={currentActiveMonth} activeYear={activeYear} />
-                </S.Item>
-              ))}
-            </S.ItemContainer>
-          </div>
-          <button type="button" onClick={handleClickNextCalendar}></button>
-        </div>
+        {/* TODO: activeMonth + magic number 수정하기 */}
+        <button type="button" onClick={handleClickPreviousCalendar}>
+          이전달
+        </button>
+        <S.Wrapper>
+          <S.ItemContainer nextCount={nextCount} transtion={transtion} divide={divide}>
+            {months.map(currentActiveMonth => (
+              <S.Item key={`activeMonth-${currentActiveMonth}`} itemGap={itemGap}>
+                <Calendar activeMonth={currentActiveMonth} activeYear={activeYear} />
+              </S.Item>
+            ))}
+          </S.ItemContainer>
+        </S.Wrapper>
+        <button type="button" onClick={handleClickNextCalendar}>
+          다음달
+        </button>
       </S.CalendarContainer>
     </WindowModal>
   );
