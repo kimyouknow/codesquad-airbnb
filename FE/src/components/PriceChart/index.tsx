@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT } from '@/components/PriceChart/constants';
 
@@ -47,11 +47,13 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
     if (!canvasRef.current) {
       return;
     }
-
     const canvas: HTMLCanvasElement = canvasRef.current;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
+    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
     context.beginPath();
+    context.strokeStyle = 'rgba(0, 0, 0, 0)';
     context.moveTo(START_X, CANVAS_HEIGHT); // 시작점(좌하단)으로 이동
 
     setPositions(context, xDataset, yDataset, maximumX, maximumY);
@@ -66,24 +68,26 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
     }
     const canvas: HTMLCanvasElement = canvasRef.current;
     const context = canvas.getContext('2d') as CanvasRenderingContext2D;
+    context.beginPath();
 
-    context.strokeStyle = 'darkGreen';
+    context.strokeStyle = 'tomato';
     context.lineWidth = 4;
 
-    const newChartInfo = chartInfo.filter(({ range }) => range < rigthX);
-    console.log('newChartInfo :>> ', newChartInfo, rigthX);
-    // setPositions(context, newChartInfo, maxRange, maxCount);
-    // context.stroke();
+    const newXDataset = xDataset.filter(x => x <= rigthX);
+    setPositions(context, newXDataset, yDataset, maximumX, maximumY);
+    context.stroke();
 
+    // TODO: 바뀐 값에 따라 라인이 업데이트되면 이후에 색칠로직 구현하기
+    // const xRatio = caculateXRatio(rigthX, maximumX);
     // fillContext(context, leftX, rigthX, 'tomato');
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     renderCanvas();
-    drawBackgroundChart();
   }, []);
 
   useEffect(() => {
+    drawBackgroundChart();
     drawAciveChart(minXThumb, maxXThumb);
   }, [minXThumb, maxXThumb]);
 
@@ -93,7 +97,7 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
       <input
         type="range"
         value={maxXThumb}
-        step={10}
+        step={10_000} // FIXME: 간격 계산해서 매직넘버 없애기
         min={0}
         max={maximumX}
         onChange={handleMaxPriceChange}
@@ -102,6 +106,11 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
   );
 }
 
+const caculateXRatio = (rawX: number, maximumX: number): number => (rawX / maximumX) * CANVAS_WIDTH;
+
+const caculateYRatio = (rawY: number, maximumY: number): number =>
+  CANVAS_HEIGHT - (rawY / maximumY) * CANVAS_HEIGHT;
+
 const setPositions = (
   context: CanvasRenderingContext2D,
   xDataset: number[],
@@ -109,10 +118,11 @@ const setPositions = (
   maximumX: number,
   maximumY: number,
 ) => {
+  context.moveTo(START_X, CANVAS_HEIGHT);
   xDataset.forEach((rawX, index) => {
     const rawY = yDataset[index];
-    const x = (rawX / maximumX) * CANVAS_WIDTH;
-    const y = CANVAS_HEIGHT - (rawY / maximumY) * CANVAS_HEIGHT;
+    const x = caculateXRatio(rawX, maximumX);
+    const y = caculateYRatio(rawY, maximumY);
     context.lineTo(x, y);
   });
 };
