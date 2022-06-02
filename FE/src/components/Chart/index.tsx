@@ -5,8 +5,8 @@ export interface ChartProps {
   yDataset: number[];
   maximumX: number;
   maximumY: number;
-  minXThumb: number;
-  maxXThumb: number;
+  leftThumbX: number;
+  rightThumbX: number;
   size: {
     width: number;
     height: number;
@@ -25,8 +25,8 @@ export default function Chart({
   yDataset,
   maximumX,
   maximumY,
-  minXThumb,
-  maxXThumb,
+  leftThumbX,
+  rightThumbX,
   size,
   revisedValues,
 }: ChartProps) {
@@ -89,8 +89,8 @@ export default function Chart({
 
   useEffect(() => {
     drawBackgroundChart();
-    drawAciveChart(minXThumb, maxXThumb);
-  }, [minXThumb, maxXThumb]);
+    drawAciveChart(leftThumbX, rightThumbX);
+  }, [leftThumbX, rightThumbX]);
 
   return <canvas ref={canvasRef}></canvas>;
 }
