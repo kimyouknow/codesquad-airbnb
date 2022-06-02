@@ -9,7 +9,12 @@ export default function App() {
     <div>
       <button onClick={handleOpenModal}>캘린더 모달</button>
       <CalendarModal isModalOpen={isModalOpen} handleOpenModal={handleOpenModal} />
-      <PriceChart chartInfo={chartInfo} axis={{ x: 'range', y: 'count' }} />
+      <PriceChart
+        chartInfo={chartInfo}
+        axis={{ x: 'range', y: 'count' }}
+        xStep={10_000}
+        yStep={1}
+      />
     </div>
   );
 }

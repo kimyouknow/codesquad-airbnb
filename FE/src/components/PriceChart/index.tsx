@@ -13,11 +13,13 @@ interface RoomCapacityType {
 interface PriceChartProps {
   chartInfo: RoomCapacityType[];
   axis: { x: string; y: string };
+  xStep: number;
+  yStep: number;
 }
 
 const START_X = 0;
 
-export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
+export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChartProps) {
   const xDataset = chartInfo.map(element => element[axis.x]);
   const yDataset = chartInfo.map(element => element[axis.y]);
   const maximumX = Math.max(...xDataset);
@@ -27,13 +29,14 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
   const [minXThumb, setMinXThumb] = useState(0);
   const [maxXThumb, setMaxXThumb] = useState(maximumX);
 
+  // FIXME: handleMaxPriceChange와 handleMinPriceChange 내부 로직이 비슷한 흐름인데 중복을 줄일 수 없을까?
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { value },
     } = event;
     const newValue = Number(value);
     if (newValue <= minXThumb) {
-      return;
+      setMinXThumb(newValue - xStep);
     }
     setMaxXThumb(newValue);
   };
@@ -44,7 +47,7 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
     } = event;
     const newValue = Number(value);
     if (newValue >= maxXThumb) {
-      return;
+      setMaxXThumb(newValue + xStep);
     }
     setMinXThumb(newValue);
   };
@@ -119,7 +122,7 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
       <input
         type="range"
         value={minXThumb}
-        step={10_000} // FIXME: 간격 계산해서 매직넘버 없애기
+        step={xStep}
         min={0}
         max={maximumX}
         onChange={handleMinPriceChange}
@@ -129,7 +132,7 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
       <input
         type="range"
         value={maxXThumb}
-        step={10_000} // FIXME: 간격 계산해서 매직넘버 없애기
+        step={xStep}
         min={0}
         max={maximumX}
         onChange={handleMaxPriceChange}
