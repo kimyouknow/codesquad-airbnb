@@ -31,14 +31,22 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
     const {
       target: { value },
     } = event;
-    setMaxXThumb(Number(value));
+    const newValue = Number(value);
+    if (newValue <= minXThumb) {
+      return;
+    }
+    setMaxXThumb(newValue);
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { value },
     } = event;
-    setMinXThumb(Number(value));
+    const newValue = Number(value);
+    if (newValue >= maxXThumb) {
+      return;
+    }
+    setMinXThumb(newValue);
   };
 
   const renderCanvas = () => {
@@ -113,7 +121,7 @@ export default function PriceChart({ chartInfo, axis }: PriceChartProps) {
         value={minXThumb}
         step={10_000} // FIXME: 간격 계산해서 매직넘버 없애기
         min={0}
-        max={maxXThumb}
+        max={maximumX}
         onChange={handleMinPriceChange}
       />
       <br />
