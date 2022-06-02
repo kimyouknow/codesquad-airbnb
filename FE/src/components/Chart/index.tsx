@@ -69,15 +69,15 @@ export default function Chart({
     const newXDataset = xDataset.filter(x => leftX <= x && x <= rigthX);
     const newYDataset = yDataset.filter((_, index) => index >= leftIndex);
 
-    const rigthXRatio = caculateXRatio(rigthX, maximumX, width);
-    const leftXRatio = caculateXRatio(leftX, maximumX, width);
-    const leftYRatio = caculateYRatio(leftY, maximumY, height);
+    const revisedRigthX = getRevisedX(rigthX, maximumX, width);
+    const revisedLeftX = getRevisedX(leftX, maximumX, width);
+    const revisedLeftY = getRevisedY(leftY, maximumY, height);
 
-    context.moveTo(leftXRatio, leftYRatio);
+    context.moveTo(revisedLeftX, revisedLeftY);
     setPositions(context, newXDataset, newYDataset, maximumX, maximumY, width, height);
     context.stroke();
 
-    fillContext(context, height, leftXRatio, rigthXRatio, 'tomato');
+    fillContext(context, height, revisedLeftX, revisedRigthX, 'tomato');
   };
 
   useEffect(() => {
@@ -92,10 +92,10 @@ export default function Chart({
   return <canvas ref={canvasRef}></canvas>;
 }
 
-const caculateXRatio = (rawX: number, maximumX: number, width: number): number =>
+const getRevisedX = (rawX: number, maximumX: number, width: number): number =>
   (rawX / maximumX) * width;
 
-const caculateYRatio = (rawY: number, maximumY: number, height: number): number =>
+const getRevisedY = (rawY: number, maximumY: number, height: number): number =>
   height - (rawY / maximumY) * height;
 
 const setPositions = (
@@ -109,8 +109,8 @@ const setPositions = (
 ) => {
   xDataset.forEach((rawX, index) => {
     const rawY = yDataset[index];
-    const x = caculateXRatio(rawX, maximumX, width);
-    const y = caculateYRatio(rawY, maximumY, height);
+    const x = getRevisedX(rawX, maximumX, width);
+    const y = getRevisedY(rawY, maximumY, height);
     context.lineTo(x, y);
   });
 };
