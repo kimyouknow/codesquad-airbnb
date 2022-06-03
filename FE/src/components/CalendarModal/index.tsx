@@ -26,8 +26,8 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
     activeMonth + 3,
   ]);
   const [nextCount, setNextCount] = useState(1);
-  const [isSlide, setIsSlide] = useState(false);
-  const [transtion, setTransition] = useState('transform 1s linear 0s');
+  const [isCombackSlide, setIsCombackSlide] = useState(false);
+  const [transition, setTransition] = useState('transform 1s linear 0s');
 
   const divide = months.length - 1;
   const currentMonthOrder = 1;
@@ -48,7 +48,7 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
     // FIXME: useEffect 내부 로직 함수로 분리
     if (nextCount === currentMonthOrder) {
       setTransition('transform 1s linear 0s');
-      if (isSlide) {
+      if (isCombackSlide) {
         // TODO : 12월 넘어가면 1월부터 다시 시작하고 year은 1추가로 수정하기
         setMonths([...months.map(currentMonth => currentMonth + increasedMonth)]);
         setTimeout(function () {
@@ -56,11 +56,11 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
         }, 0);
         setTransition('');
       }
-      setIsSlide(false);
+      setIsCombackSlide(false);
     } else if (nextCount === lastMonthOrder) {
-      setIsSlide(true);
+      setIsCombackSlide(true);
     }
-  }, [nextCount, transtion, isSlide]);
+  }, [nextCount, transition, isCombackSlide]);
 
   return (
     <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
@@ -70,7 +70,7 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
           이전달
         </button>
         <S.Wrapper>
-          <S.ItemContainer nextCount={nextCount} transtion={transtion}>
+          <S.ItemContainer nextCount={nextCount} transition={transition}>
             {months.map(currentActiveMonth => (
               <S.Item key={`activeMonth-${currentActiveMonth}`} itemGap={itemGap}>
                 <Calendar activeMonth={currentActiveMonth} activeYear={activeYear} />

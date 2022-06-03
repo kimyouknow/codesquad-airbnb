@@ -16,7 +16,7 @@ export const ItemContainer = styled.ul`
   display: flex;
   width: 100%;
   padding: 0; // TODO : reset css 적용시 삭제하기
-  transition: ${({ transtion }) => transtion};
+  transition: ${({ transition }) => transition};
   transform: ${({ nextCount }) =>
     nextCount === 0 ? `translateX(-50%)` : `translateX(${-50 * nextCount}%)`};
 `;
