@@ -29,14 +29,13 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   const [isSlide, setIsSlide] = useState(false);
   const [transtion, setTransition] = useState('transform 1s linear 0s');
 
-  // TODO : handleClickNextCalendar를 참고하여 이전 달력 클릭 핸들러 구현하기
-  const handleClickPreviousCalendar = () => {};
-
   const divide = months.length - 1;
   const currentMonthOrder = 1;
   const lastMonthOrder = divide - 1;
   const increasedMonth = divide - 2;
   const itemGap = 26;
+
+  const handleClickPreviousCalendar = () => {};
 
   const handleClickNextCalendar = () => {
     setActiveMonth(activeMonth + 1);
@@ -46,6 +45,7 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   };
 
   useEffect(() => {
+    // FIXME: useEffect 내부 로직 함수로 분리
     if (nextCount === currentMonthOrder) {
       setTransition('transform 1s linear 0s');
       if (isSlide) {
@@ -70,7 +70,7 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
           이전달
         </button>
         <S.Wrapper>
-          <S.ItemContainer nextCount={nextCount} transtion={transtion} divide={divide}>
+          <S.ItemContainer nextCount={nextCount} transtion={transtion}>
             {months.map(currentActiveMonth => (
               <S.Item key={`activeMonth-${currentActiveMonth}`} itemGap={itemGap}>
                 <Calendar activeMonth={currentActiveMonth} activeYear={activeYear} />
