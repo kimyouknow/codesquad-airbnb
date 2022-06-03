@@ -53,9 +53,9 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
   const leftIndex = xDataset.findIndex(element => element === leftThumbX);
   const leftY = yDataset[leftIndex];
 
-  const revisedRigthX = caculateXRatio(rightThumbX, maximumX, CANVAS_WIDTH);
-  const revisedLeftX = caculateXRatio(leftThumbX, maximumX, CANVAS_WIDTH);
-  const revisedLeftY = caculateYRatio(leftY, maximumY, CANVAS_HEIGHT);
+  const revisedRigthX = calculateXRatio(rightThumbX, maximumX, CANVAS_WIDTH);
+  const revisedLeftX = calculateXRatio(leftThumbX, maximumX, CANVAS_WIDTH);
+  const revisedLeftY = calculateYRatio(leftY, maximumY, CANVAS_HEIGHT);
 
   return (
     <S.CanvasContainer>
@@ -92,8 +92,8 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
   );
 }
 
-const caculateXRatio = (rawX: number, currentMaximumX: number, width: number): number =>
+const calculateXRatio = (rawX: number, currentMaximumX: number, width: number): number =>
   (rawX / currentMaximumX) * width;
 
-const caculateYRatio = (rawY: number, currentMaximumY: number, height: number): number =>
+const calculateYRatio = (rawY: number, currentMaximumY: number, height: number): number =>
   height - (rawY / currentMaximumY) * height;

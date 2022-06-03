@@ -95,10 +95,10 @@ export default function Chart({
   return <canvas ref={canvasRef}></canvas>;
 }
 
-const caculateXRatio = (rawX: number, maximumX: number, width: number): number =>
+const calculateXRatio = (rawX: number, maximumX: number, width: number): number =>
   (rawX / maximumX) * width;
 
-const caculateYRatio = (rawY: number, maximumY: number, height: number): number =>
+const calculateYRatio = (rawY: number, maximumY: number, height: number): number =>
   height - (rawY / maximumY) * height;
 
 const setPositions = (
@@ -112,8 +112,8 @@ const setPositions = (
 ) => {
   xDataset.forEach((rawX, index) => {
     const rawY = yDataset[index];
-    const x = caculateXRatio(rawX, maximumX, width);
-    const y = caculateYRatio(rawY, maximumY, height);
+    const x = calculateXRatio(rawX, maximumX, width);
+    const y = calculateYRatio(rawY, maximumY, height);
     context.lineTo(x, y);
   });
 };
