@@ -24,8 +24,8 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
   const maximumX = Math.max(...xDataset);
   const maximumY = Math.max(...yDataset);
 
-  const [minXThumb, setMinXThumb] = useState(0);
-  const [maxXThumb, setMaxXThumb] = useState(maximumX);
+  const [leftThumbX, setLeftThumbX] = useState(0);
+  const [rightThumbX, setRightThumbX] = useState(maximumX);
 
   // FIXME: handleMaxPriceChange와 handleMinPriceChange 내부 로직이 비슷한 흐름인데 중복을 줄일 수 없을까?
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,10 +33,10 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
       target: { value },
     } = event;
     const newValue = Number(value);
-    if (newValue <= minXThumb) {
-      setMinXThumb(newValue - xStep);
+    if (newValue <= leftThumbX) {
+      setLeftThumbX(newValue - xStep);
     }
-    setMaxXThumb(newValue);
+    setRightThumbX(newValue);
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,11 +44,18 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
       target: { value },
     } = event;
     const newValue = Number(value);
-    if (newValue >= maxXThumb) {
-      setMaxXThumb(newValue + xStep);
+    if (newValue >= rightThumbX) {
+      setRightThumbX(newValue + xStep);
     }
-    setMinXThumb(newValue);
+    setLeftThumbX(newValue);
   };
+
+  const leftIndex = xDataset.findIndex(element => element === leftThumbX);
+  const leftY = yDataset[leftIndex];
+
+  const revisedRigthX = calculateXRatio(rightThumbX, maximumX, CANVAS_WIDTH);
+  const revisedLeftX = calculateXRatio(leftThumbX, maximumX, CANVAS_WIDTH);
+  const revisedLeftY = calculateYRatio(leftY, maximumY, CANVAS_HEIGHT);
 
   return (
     <S.CanvasContainer>
@@ -57,14 +64,15 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
         yDataset={yDataset}
         maximumX={maximumX}
         maximumY={maximumY}
-        minXThumb={minXThumb}
-        maxXThumb={maxXThumb}
+        leftThumbX={leftThumbX}
+        rightThumbX={rightThumbX}
         size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+        revisedValues={{ revisedRigthX, revisedLeftX, revisedLeftY }}
       />
       <label>최소</label>
       <input
         type="range"
-        value={minXThumb}
+        value={leftThumbX}
         step={xStep}
         min={0}
         max={maximumX}
@@ -74,7 +82,7 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
       <label>최대</label>
       <input
         type="range"
-        value={maxXThumb}
+        value={rightThumbX}
         step={xStep}
         min={0}
         max={maximumX}
@@ -83,3 +91,9 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     </S.CanvasContainer>
   );
 }
+
+const calculateXRatio = (rawX: number, currentMaximumX: number, width: number): number =>
+  (rawX / currentMaximumX) * width;
+
+const calculateYRatio = (rawY: number, currentMaximumY: number, height: number): number =>
+  height - (rawY / currentMaximumY) * height;
