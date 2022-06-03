@@ -17,8 +17,8 @@ export const ItemContainer = styled.ul`
   width: 100%;
   padding: 0; // TODO : reset css 적용시 삭제하기
   transition: ${({ transtion }) => transtion};
-  transform: ${({ nextCount, divide }) =>
-    nextCount === 0 ? `translateX(-50%)` : `translateX(${-50 * (nextCount % divide)}%)`};
+  transform: ${({ nextCount }) =>
+    nextCount === 0 ? `translateX(-50%)` : `translateX(${-50 * nextCount}%)`};
 `;
 
 export const Item = styled.li`
