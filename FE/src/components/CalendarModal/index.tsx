@@ -1,6 +1,14 @@
 import { useState } from 'react';
 
 import Calendar from '@/components/Calendar';
+import {
+  LAST_MONTH,
+  INCREASED_YEAR,
+  INCREASED_MONTH,
+  HIDDEN_CARD_NUM,
+  INCREASED_SLIDE_X_COUNT,
+  INITIAL_MOVE_X_COUNT,
+} from '@/components/CalendarModal/constants';
 
 import WindowModal from '../WindowModal';
 import * as S from './style';
@@ -16,23 +24,21 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   const year = today.getFullYear();
   const month = today.getMonth();
 
-  const [activeYear, setActiveYear] = useState(year);
   const [activeMonth, setActiveMonth] = useState(month);
 
+  const itemGap = 26;
   const showingCardNum = 2;
-  const HIDDEN_CARD_NUM = 2;
+  const slideCardsLength = showingCardNum + HIDDEN_CARD_NUM;
+  const initialYears = Array.from({ length: slideCardsLength }, () => year);
   const initialMonths = Array.from(
-    { length: showingCardNum + HIDDEN_CARD_NUM },
+    { length: slideCardsLength },
     (_, index) => index - 1 + activeMonth,
   );
-  // TODO : 12월 넘어가면 1월부터 다시 시작하고 year은 1추가로 수정하기
+
   const [months, setMonths] = useState(initialMonths);
+  const [years, setYears] = useState(initialYears);
   const [slideXCount, setSlideXCount] = useState(1);
   const [isRightSliding, setIsRightSliding] = useState(false);
-  const INCREASED_MONTH = 1;
-  const INCREASED_SLIDE_X_COUNT = 1;
-  const INITIAL_SLIDE_X_COUNT = 1;
-  const itemGap = 26;
 
   const handleClickPreviousCalendar = () => {};
 
@@ -42,17 +48,21 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   };
 
   const handleTransitionEnd = () => {
-    setActiveMonth(activeMonth + INCREASED_MONTH);
-    setSlideXCount(INITIAL_SLIDE_X_COUNT);
-    setMonths(months.map(currentMonth => currentMonth + INCREASED_MONTH));
-    setIsRightSliding(false);
+    if (isRightSliding) {
+      const [newYears, newMonths] = getNextMonthsNyears(months, years);
+      setActiveMonth(activeMonth + INCREASED_MONTH);
+      setSlideXCount(INITIAL_MOVE_X_COUNT);
+      setMonths([...newMonths]);
+      setYears([...newYears]);
+      setIsRightSliding(false);
+    }
   };
 
   return (
     <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
       <S.CalendarContainer>
         {/* TODO: activeMonth + magic number 수정하기 */}
-        <button type="button" onClick={handleClickPreviousCalendar}>
+        <button type="button" onClick={handleClickPreviousCalendar} disabled={isRightSliding}>
           이전달
         </button>
         <S.Wrapper>
@@ -62,21 +72,41 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
             onTransitionEnd={handleTransitionEnd}
             showingCardNum={showingCardNum}
           >
-            {months.map(currentActiveMonth => (
+            {months.map((currentActiveMonth, index) => (
               <S.Item
                 key={`activeMonth-${currentActiveMonth}`}
                 itemGap={itemGap}
                 showingCardNum={showingCardNum}
               >
-                <Calendar activeMonth={currentActiveMonth} activeYear={activeYear} />
+                <Calendar activeMonth={currentActiveMonth} activeYear={years[index]} />
               </S.Item>
             ))}
           </S.ItemContainer>
         </S.Wrapper>
-        <button type="button" onClick={handleClickNextCalendar}>
+        <button type="button" onClick={handleClickNextCalendar} disabled={isRightSliding}>
           다음달
         </button>
       </S.CalendarContainer>
     </WindowModal>
   );
 }
+
+const getNextMonthsNyears = (currentMonths: number[], currentYears: number[]) => {
+  const newYears = [] as number[];
+  const newMonths = [] as number[];
+
+  currentMonths.forEach((currentMonth, index) => {
+    const currentYear = currentYears[index];
+    const isOutOfMonth = currentMonth >= LAST_MONTH;
+    console.log(currentMonth);
+    if (isOutOfMonth) {
+      newYears.push(currentYear + INCREASED_YEAR);
+      newMonths.push(currentMonth % LAST_MONTH);
+    } else {
+      newYears.push(currentYear);
+      newMonths.push(currentMonth + INCREASED_MONTH);
+    }
+  });
+
+  return [newYears, newMonths];
+};
