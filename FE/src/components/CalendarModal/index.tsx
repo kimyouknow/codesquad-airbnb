@@ -1,6 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import Calendar from '@/components/Calendar';
+import {
+  LAST_MONTH,
+  INCREASED_YEAR,
+  INCREASED_MONTH,
+  HIDDEN_CARD_NUM,
+  INCREASED_SLIDE_X_COUNT,
+  INITIAL_MOVE_X_COUNT,
+} from '@/components/CalendarModal/constants';
 
 import WindowModal from '../WindowModal';
 import * as S from './style';
@@ -15,73 +23,90 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
-  const [activeYear, setActiveYear] = useState(year);
-  const [activeMonth, setActiveMonth] = useState(month);
-  // TODO : 12월 넘어가면 1월부터 다시 시작하고 year은 1추가로 수정하기
-  const [months, setMonths] = useState([
-    activeMonth - 1,
-    activeMonth,
-    activeMonth + 1,
-    activeMonth + 2,
-    activeMonth + 3,
-  ]);
-  const [nextCount, setNextCount] = useState(1);
-  const [isCombackSlide, setIsCombackSlide] = useState(false);
-  const [transition, setTransition] = useState('transform 1s linear 0s');
 
-  const divide = months.length - 1;
-  const currentMonthOrder = 1;
-  const lastMonthOrder = divide - 1;
-  const increasedMonth = divide - 2;
+  const [activeMonth, setActiveMonth] = useState(month);
+
   const itemGap = 26;
+  const showingCardNum = 2;
+  const slideCardsLength = showingCardNum + HIDDEN_CARD_NUM;
+  const initialYears = Array.from({ length: slideCardsLength }, () => year);
+  const initialMonths = Array.from(
+    { length: slideCardsLength },
+    (_, index) => index - 1 + activeMonth,
+  );
+
+  const [months, setMonths] = useState(initialMonths);
+  const [years, setYears] = useState(initialYears);
+  const [slideXCount, setSlideXCount] = useState(1);
+  const [isRightSliding, setIsRightSliding] = useState(false);
 
   const handleClickPreviousCalendar = () => {};
 
   const handleClickNextCalendar = () => {
-    setActiveMonth(activeMonth + 1);
-    const newOrder = (nextCount + 1) % divide;
-    const firstMonthOrder = newOrder + 1;
-    setNextCount(nextCount === lastMonthOrder ? firstMonthOrder : newOrder);
+    setIsRightSliding(true);
+    setSlideXCount(slideXCount + INCREASED_SLIDE_X_COUNT);
   };
 
-  useEffect(() => {
-    // FIXME: useEffect 내부 로직 함수로 분리
-    if (nextCount === currentMonthOrder) {
-      setTransition('transform 1s linear 0s');
-      if (isCombackSlide) {
-        // TODO : 12월 넘어가면 1월부터 다시 시작하고 year은 1추가로 수정하기
-        setMonths([...months.map(currentMonth => currentMonth + increasedMonth)]);
-        setTimeout(function () {
-          setNextCount((nextCount + 1) % divide);
-        }, 0);
-        setTransition('');
-      }
-      setIsCombackSlide(false);
-    } else if (nextCount === lastMonthOrder) {
-      setIsCombackSlide(true);
+  const handleTransitionEnd = () => {
+    if (isRightSliding) {
+      const [newYears, newMonths] = getNextMonthsNyears(months, years);
+      setActiveMonth(activeMonth + INCREASED_MONTH);
+      setSlideXCount(INITIAL_MOVE_X_COUNT);
+      setMonths([...newMonths]);
+      setYears([...newYears]);
+      setIsRightSliding(false);
     }
-  }, [nextCount, transition, isCombackSlide]);
+  };
 
   return (
     <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
       <S.CalendarContainer>
         {/* TODO: activeMonth + magic number 수정하기 */}
-        <button type="button" onClick={handleClickPreviousCalendar}>
+        <button type="button" onClick={handleClickPreviousCalendar} disabled={isRightSliding}>
           이전달
         </button>
         <S.Wrapper>
-          <S.ItemContainer nextCount={nextCount} transition={transition}>
-            {months.map(currentActiveMonth => (
-              <S.Item key={`activeMonth-${currentActiveMonth}`} itemGap={itemGap}>
-                <Calendar activeMonth={currentActiveMonth} activeYear={activeYear} />
+          <S.ItemContainer
+            slideXCount={slideXCount}
+            isRightSliding={isRightSliding}
+            onTransitionEnd={handleTransitionEnd}
+            showingCardNum={showingCardNum}
+          >
+            {months.map((currentActiveMonth, index) => (
+              <S.Item
+                key={`activeMonth-${currentActiveMonth}`}
+                itemGap={itemGap}
+                showingCardNum={showingCardNum}
+              >
+                <Calendar activeMonth={currentActiveMonth} activeYear={years[index]} />
               </S.Item>
             ))}
           </S.ItemContainer>
         </S.Wrapper>
-        <button type="button" onClick={handleClickNextCalendar}>
+        <button type="button" onClick={handleClickNextCalendar} disabled={isRightSliding}>
           다음달
         </button>
       </S.CalendarContainer>
     </WindowModal>
   );
 }
+
+const getNextMonthsNyears = (currentMonths: number[], currentYears: number[]) => {
+  const newYears = [] as number[];
+  const newMonths = [] as number[];
+
+  currentMonths.forEach((currentMonth, index) => {
+    const currentYear = currentYears[index];
+    const isOutOfMonth = currentMonth >= LAST_MONTH;
+    console.log(currentMonth);
+    if (isOutOfMonth) {
+      newYears.push(currentYear + INCREASED_YEAR);
+      newMonths.push(currentMonth % LAST_MONTH);
+    } else {
+      newYears.push(currentYear);
+      newMonths.push(currentMonth + INCREASED_MONTH);
+    }
+  });
+
+  return [newYears, newMonths];
+};
