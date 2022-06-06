@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-import { months, daysOfWeek } from '@/constants/constants';
+import { months, daysOfWeek, saturdayNumber } from '@/constants/constants';
 
 import * as S from './style';
 
@@ -8,30 +7,29 @@ interface CalendarProps {
   activeMonth: number;
 }
 
-// TODO: interface DateProps하나에서 extends해서 확장해서 써보기
 interface DateProps {
   year: number;
   month: number;
-  date: number;
   isAciveMonth: boolean;
+  date: number;
 }
 
-interface RenderDateProps extends DateProps {
-  id: Date;
+interface CalendarDateProps extends DateProps {
+  id: string;
 }
 
-interface RenderDatesProps {
+interface DatesProps {
   year: number;
   month: number;
+  isAciveMonth: boolean;
   length: number;
   addedDate: number;
-  isAciveMonth: boolean;
 }
 
 export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
-  const dates = renderCalendar({ activeYear, activeMonth });
+  const dates = getCalendarInfo({ activeYear, activeMonth });
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <S.Container>
       <S.CalendarTitle>{`${months[activeMonth]} ${activeYear}`}</S.CalendarTitle>
       <S.WeekContainer>
         {daysOfWeek.map(day => (
@@ -39,18 +37,17 @@ export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
         ))}
       </S.WeekContainer>
       <S.WeekContainer>
-        {/* FIXME: 키 값 겹치는 에러 수정하기 */}
         {dates.map(({ id, date, isAciveMonth }) => (
           <S.DayItem isAciveMonth={isAciveMonth} key={id}>
             {date}
           </S.DayItem>
         ))}
       </S.WeekContainer>
-    </div>
+    </S.Container>
   );
 }
 
-function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<RenderDateProps> {
+const getCalendarInfo = ({ activeYear, activeMonth }: CalendarProps): CalendarDateProps[] => {
   const prevMonthLastFullDate = new Date(activeYear, activeMonth, 0);
   const prevMonthLastDay = prevMonthLastFullDate.getDay();
   const prevMonthLastDate = prevMonthLastFullDate.getDate();
@@ -59,14 +56,14 @@ function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<Rende
   const activeMonthLastDay = activeMonthLastFullDate.getDay();
   const activeMonthLastDate = activeMonthLastFullDate.getDate();
 
-  const prevMonthDates = renderPrevMonthLastWeek(
+  const prevMonthDates = getPrevMonthLastWeek(
     prevMonthLastDay,
     prevMonthLastDate,
     activeYear,
-    activeMonth,
+    activeMonth - 1,
   );
 
-  const currentMonthDates = renderDates({
+  const currentMonthDates = getDates({
     length: activeMonthLastDate,
     year: activeYear,
     month: activeMonth,
@@ -74,71 +71,64 @@ function renderCalendar({ activeYear, activeMonth }: CalendarProps): Array<Rende
     isAciveMonth: true,
   });
 
-  const nextMonthDates = renderNextMonthFirstWeek(activeMonthLastDay, activeYear, activeMonth + 1);
+  const nextMonthDates = getNextMonthFirstWeek(activeMonthLastDay, activeYear, activeMonth + 1);
 
   return prevMonthDates.concat(currentMonthDates, nextMonthDates);
-}
+};
 
-// TODO: 6 (getDay()로 얻은 토요일 값): 매직넘버 수정하기
-function renderPrevMonthLastWeek(
+const getPrevMonthLastWeek = (
   prevMonthLastDay: number,
   prevMonthLastDate: number,
   year: number,
   month: number,
-): Array<RenderDateProps> {
-  if (prevMonthLastDay !== 6) {
-    return renderDates({
-      length: prevMonthLastDay + 1,
-      year,
-      month,
-      addedDate: prevMonthLastDate - prevMonthLastDay - 1,
-      isAciveMonth: false,
-    });
-  }
-  return [];
-}
+): CalendarDateProps[] =>
+  isSaturDay(prevMonthLastDay)
+    ? getDates({
+        length: prevMonthLastDay + 1,
+        year,
+        month,
+        addedDate: prevMonthLastDate - prevMonthLastDay - 1,
+        isAciveMonth: false,
+      })
+    : [];
 
-function renderNextMonthFirstWeek(
+const getNextMonthFirstWeek = (
   activeMonthLastDay: number,
   year: number,
   month: number,
-): Array<RenderDateProps> {
-  if (activeMonthLastDay !== 6) {
-    return renderDates({
-      length: 6 - activeMonthLastDay,
-      year,
-      month,
-      addedDate: 0,
-      isAciveMonth: false,
-    });
-  }
-  return [];
-}
+): CalendarDateProps[] =>
+  isSaturDay(activeMonthLastDay)
+    ? getDates({
+        length: saturdayNumber - activeMonthLastDay,
+        year,
+        month,
+        addedDate: 0,
+        isAciveMonth: false,
+      })
+    : [];
 
-function renderDates({
+const getDates = ({
   length,
   year,
   month,
   addedDate,
   isAciveMonth,
-}: RenderDatesProps): Array<RenderDateProps> {
-  // TODO: //  RenderDateProps[] 배열 타입 지정 고려해보기
-  return Array.from({ length }, (v, i) =>
-    renderDate({
+}: DatesProps): CalendarDateProps[] =>
+  Array.from({ length }, (_, i) =>
+    getDate({
       year,
       month,
-      date: i + 1 + addedDate,
+      date: i + addedDate + 1,
       isAciveMonth,
     }),
   );
-}
 
-function renderDate({ year, month, date, isAciveMonth }: DateProps): RenderDateProps {
-  return {
-    id: new Date(year, month, date),
-    year,
-    month,
-    date,
-    isAciveMonth,
-  };
-}
+const getDate = ({ year, month, date, isAciveMonth }: DateProps): CalendarDateProps => ({
+  id: `${year}-${month}-${date}`,
+  year,
+  month,
+  date,
+  isAciveMonth,
+});
+
+const isSaturDay = (numberOfDay: number) => numberOfDay !== saturdayNumber;
