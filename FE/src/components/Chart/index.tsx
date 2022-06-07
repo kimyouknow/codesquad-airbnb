@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 
+import { PRIMARY_COLOR, SECONDARY_COLOR } from '@/style';
+
 export interface ChartProps {
   xDataset: number[];
   yDataset: number[];
@@ -59,7 +61,7 @@ export default function Chart({
     setPositions(context, xDataset, yDataset, maximumX, maximumY, width, height);
 
     context.stroke();
-    fillContext(context, height, 0, width, 'wheat');
+    fillContext(context, height, 0, width, SECONDARY_COLOR);
   };
 
   const drawAciveChart = (leftX: number, rigthX: number) => {
@@ -80,7 +82,7 @@ export default function Chart({
     setPositions(context, newXDataset, newYDataset, maximumX, maximumY, width, height);
     context.stroke();
 
-    fillContext(context, height, revisedLeftX, revisedRigthX, 'tomato');
+    fillContext(context, height, revisedLeftX, revisedRigthX, PRIMARY_COLOR);
   };
 
   useEffect(() => {
