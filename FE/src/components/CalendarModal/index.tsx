@@ -10,7 +10,7 @@ interface CalendarModalProps {
 export default function CalendarModal({ isModalOpen, handleOpenModal }: CalendarModalProps) {
   return (
     <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
-      <CalendarCaoursel />
+      <CalendarCaoursel initDate={new Date()} itemGap={26} showingCardNum={2} hiddenCardNum={2} />
     </WindowModal>
   );
 }

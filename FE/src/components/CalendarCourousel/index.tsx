@@ -5,7 +5,6 @@ import {
   LAST_MONTH,
   INCREASED_YEAR,
   INCREASED_MONTH,
-  HIDDEN_CARD_NUM,
   INCREASED_SLIDE_X_COUNT,
   INITIAL_MOVE_X_COUNT,
   FIRST_MONTH,
@@ -17,29 +16,36 @@ import {
 
 import * as S from './style';
 
+interface CalendarCaourselProps {
+  initDate: Date;
+  itemGap: number;
+  showingCardNum: number;
+  hiddenCardNum: number;
+}
+
 interface SlideAction {
   isSliding: boolean;
   actionType: typeof SLIDE_ACTION[keyof typeof SLIDE_ACTION];
 }
 
-export default function CalendarCaoursel() {
-  // TODO: date formater util로 분리하기
-  const today = new Date();
-  const yearToday = today.getFullYear(); // FIXME: yearToday가 더 낫나요?ㅎㅎㅎ
-  const monthToday = today.getMonth();
+export default function CalendarCaoursel({
+  initDate,
+  itemGap,
+  showingCardNum,
+  hiddenCardNum,
+}: CalendarCaourselProps) {
+  const initYear = initDate.getFullYear();
+  const initMonth = initDate.getMonth();
+  const slideCardsLength = showingCardNum + hiddenCardNum;
 
-  const itemGap = 26;
-  const showingCardNum = 2;
-  const slideCardsLength = showingCardNum + HIDDEN_CARD_NUM;
-
-  const [activeMonth, setActiveMonth] = useState(monthToday);
+  const [activeMonth, setActiveMonth] = useState(initMonth);
   const [slideXCount, setSlideXCount] = useState(INITIAL_MOVE_X_COUNT);
   const [slideAction, setSlideAction] = useState<SlideAction>({
     isSliding: false,
     actionType: SLIDE_ACTION.PAUSE,
   });
 
-  const calendarHeaderDate = getMonthsWithYear(slideCardsLength, activeMonth, yearToday);
+  const calendarHeaderDate = getMonthsWithYear(slideCardsLength, activeMonth, initYear);
 
   const initializeSlideAction = () =>
     setSlideAction({ isSliding: false, actionType: SLIDE_ACTION.PAUSE });
@@ -107,7 +113,7 @@ const getMonthsWithYear = (slideCardsLength: number, month: number, year: number
 
 const isOverMonth = (month: number) => month > LAST_MONTH;
 
-const isUnerMonth = (month: number) => month < FIRST_MONTH;
+const isUnderMonth = (month: number) => month < FIRST_MONTH;
 
 const setYearWitMonth = (year: number, month: number) => {
   const monthWithYear = { year, month: month };
@@ -115,7 +121,7 @@ const setYearWitMonth = (year: number, month: number) => {
     monthWithYear.year = year + INCREASED_YEAR;
     monthWithYear.month = month - MONTH_LENGTH;
   }
-  if (isUnerMonth(month)) {
+  if (isUnderMonth(month)) {
     monthWithYear.year = year - DECREASE_YEAR;
     monthWithYear.month = month + MONTH_LENGTH;
   }
