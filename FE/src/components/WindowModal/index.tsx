@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, MouseEvent } from 'react';
 
 import Potal from './Portal';
 import * as S from './style';
@@ -16,7 +16,7 @@ function WindowModal({ children, show, handleOpenModal }: WindowModalProps) {
   return (
     <Potal>
       <S.ModalWrapper onClick={handleOpenModal}>
-        <S.ModalContainer onClick={(event: Event) => event.stopPropagation()}>
+        <S.ModalContainer onClick={(event: MouseEvent) => event.stopPropagation()}>
           <S.CloseModalButton onClick={handleOpenModal}>&times;</S.CloseModalButton>
           {children}
         </S.ModalContainer>

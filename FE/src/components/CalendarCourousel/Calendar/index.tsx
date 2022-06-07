@@ -37,10 +37,8 @@ export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
         ))}
       </S.WeekContainer>
       <S.WeekContainer>
-        {dates.map(({ id, date, isAciveMonth }) => (
-          <S.DayItem isAciveMonth={isAciveMonth} key={id}>
-            {date}
-          </S.DayItem>
+        {dates.map(({ id, date }) => (
+          <S.DayItem key={id}>{date}</S.DayItem>
         ))}
       </S.WeekContainer>
     </S.Container>
