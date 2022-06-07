@@ -61,7 +61,7 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
   const moveRightThumbX = 100 - (rightThumbX / maximumX) * 100;
 
   return (
-    <S.CanvasContainer>
+    <S.Container containerWidth={CANVAS_HEIGHT} containerHeight={CANVAS_WIDTH}>
       <Chart
         xDataset={xDataset}
         yDataset={yDataset}
@@ -97,7 +97,7 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
         <S.LeftThumb moveLeftThumbX={moveLeftThumbX}></S.LeftThumb>
         <S.RightThumb moveRightThumbX={moveRightThumbX}></S.RightThumb>
       </S.VirtualSlider>
-    </S.CanvasContainer>
+    </S.Container>
   );
 }
 

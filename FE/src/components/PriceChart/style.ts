@@ -3,12 +3,12 @@ import styled, { css } from 'styled-components';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '@/style';
 
 import { CANVAS_WIDTH } from './constants';
-import containerSize from './mixins';
 
 const THUMB_SIZE = '16px';
 
-export const CanvasContainer = styled.div`
-  ${containerSize}
+export const Container = styled.div<{ containerWidth: number; containerHeight: number }>`
+  width: ${({ containerWidth }) => `${containerWidth}px`};
+  height: ${({ containerHeight }) => `${containerHeight}px`};
 `;
 
 export const SliderController = styled.input`
@@ -45,7 +45,7 @@ export const Track = styled.div`
   background-color: ${SECONDARY_COLOR};
 `;
 
-export const Range = styled.div`
+export const Range = styled.div<{ moveLeftThumbX: number; moveRightThumbX: number }>`
   position: absolute;
   z-index: 2;
   left: ${({ moveLeftThumbX }) => moveLeftThumbX}%;
@@ -66,13 +66,13 @@ const thumb = css`
   top: 7px;
 `;
 
-export const LeftThumb = styled.div`
+export const LeftThumb = styled.div<{ moveLeftThumbX: number }>`
   ${thumb}
   left: calc(${({ moveLeftThumbX }) => moveLeftThumbX}% + ${THUMB_SIZE});
   transform: translate(-100%, -60%);
 `;
 
-export const RightThumb = styled.div`
+export const RightThumb = styled.div<{ moveRightThumbX: number }>`
   ${thumb}
   right: calc(${({ moveRightThumbX }) => moveRightThumbX}% + ${THUMB_SIZE});
   transform: translate(100%, -60%);
