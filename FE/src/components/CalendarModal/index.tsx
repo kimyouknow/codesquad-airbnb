@@ -8,7 +8,9 @@ import {
   HIDDEN_CARD_NUM,
   INCREASED_SLIDE_X_COUNT,
   INITIAL_MOVE_X_COUNT,
-  DECREASED_MONTH,
+  FIRST_MONTH,
+  MONTH_LENGTH,
+  DECREASE_YEAR,
 } from '@/components/CalendarModal/constants';
 
 import WindowModal from '../WindowModal';
@@ -32,33 +34,42 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   const [activeMonth, setActiveMonth] = useState(monthToday);
   const [slideXCount, setSlideXCount] = useState(1);
   const [isRightSliding, setIsRightSliding] = useState(false);
+  const [isLeftSliding, setIsLeftSliding] = useState(false);
 
   const calendarHeaderDate = getMonthsWithYear(slideCardsLength, activeMonth, yearToday);
 
-  const handleClickPreviousCalendar = () => {};
+  const handleClickPreviousCalendar = () => {
+    setIsLeftSliding(true);
+    setSlideXCount(prev => prev - INCREASED_SLIDE_X_COUNT);
+  };
 
   const handleClickNextCalendar = () => {
     setIsRightSliding(true);
-    setSlideXCount(slideXCount + INCREASED_SLIDE_X_COUNT);
+    setSlideXCount(prev => prev + INCREASED_SLIDE_X_COUNT);
   };
 
   const handleTransitionEnd = () => {
+    setSlideXCount(INITIAL_MOVE_X_COUNT);
     if (isRightSliding) {
-      setActiveMonth(prevMonth => prevMonth + INCREASED_MONTH);
-      setSlideXCount(INITIAL_MOVE_X_COUNT);
       setIsRightSliding(false);
+      setActiveMonth(prevMonth => prevMonth + INCREASED_MONTH);
+    }
+    if (isLeftSliding) {
+      setIsLeftSliding(false);
+      setActiveMonth(prevMonth => prevMonth - INCREASED_MONTH);
     }
   };
 
   return (
     <WindowModal show={true} handleOpenModal={handleOpenModal}>
       <S.CalendarContainer>
-        <button type="button" onClick={handleClickPreviousCalendar} disabled={isRightSliding}>
+        <button type="button" onClick={handleClickPreviousCalendar} disabled={isLeftSliding}>
           이전달
         </button>
         <S.Wrapper>
           <S.ItemContainer
             slideXCount={slideXCount}
+            isLeftSliding={isLeftSliding}
             isRightSliding={isRightSliding}
             onTransitionEnd={handleTransitionEnd}
             showingCardNum={showingCardNum}
@@ -82,15 +93,21 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   );
 }
 
-const isOutOfMonth = (month: number) => month > LAST_MONTH;
+const isOverMonth = (month: number) => month > LAST_MONTH;
+
+const isUnerMonth = (month: number) => month < FIRST_MONTH;
 
 const getMonthsWithYear = (slideCardsLength: number, month: number, year: number) => {
   const calendarHeaderDate = Array.from({ length: slideCardsLength }, (_, index) => {
     const currentMonth = index - 1 + month;
     const monthWithYear = { year, month: currentMonth };
-    if (isOutOfMonth(currentMonth)) {
+    if (isOverMonth(currentMonth)) {
       monthWithYear.year = year + INCREASED_YEAR;
-      monthWithYear.month = currentMonth - DECREASED_MONTH;
+      monthWithYear.month = currentMonth - MONTH_LENGTH;
+    }
+    if (isUnerMonth(currentMonth)) {
+      monthWithYear.year = year - DECREASE_YEAR;
+      monthWithYear.month = currentMonth + MONTH_LENGTH;
     }
     return monthWithYear;
   });
