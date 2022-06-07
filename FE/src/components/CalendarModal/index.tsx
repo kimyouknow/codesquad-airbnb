@@ -93,23 +93,28 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
   );
 }
 
+const getMonthsWithYear = (slideCardsLength: number, month: number, year: number) => {
+  const calendarHeaderDate = Array.from({ length: slideCardsLength }, (_, index) => {
+    const currentMonth = index - 1 + month;
+    const monthWithYear = setYearWitMonth(year, currentMonth);
+    return monthWithYear;
+  });
+  return calendarHeaderDate;
+};
+
 const isOverMonth = (month: number) => month > LAST_MONTH;
 
 const isUnerMonth = (month: number) => month < FIRST_MONTH;
 
-const getMonthsWithYear = (slideCardsLength: number, month: number, year: number) => {
-  const calendarHeaderDate = Array.from({ length: slideCardsLength }, (_, index) => {
-    const currentMonth = index - 1 + month;
-    const monthWithYear = { year, month: currentMonth };
-    if (isOverMonth(currentMonth)) {
-      monthWithYear.year = year + INCREASED_YEAR;
-      monthWithYear.month = currentMonth - MONTH_LENGTH;
-    }
-    if (isUnerMonth(currentMonth)) {
-      monthWithYear.year = year - DECREASE_YEAR;
-      monthWithYear.month = currentMonth + MONTH_LENGTH;
-    }
-    return monthWithYear;
-  });
-  return calendarHeaderDate;
+const setYearWitMonth = (year: number, month: number) => {
+  const monthWithYear = { year, month: month };
+  if (isOverMonth(month)) {
+    monthWithYear.year = year + INCREASED_YEAR;
+    monthWithYear.month = month - MONTH_LENGTH;
+  }
+  if (isUnerMonth(month)) {
+    monthWithYear.year = year - DECREASE_YEAR;
+    monthWithYear.month = month + MONTH_LENGTH;
+  }
+  return monthWithYear;
 };
