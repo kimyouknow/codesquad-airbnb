@@ -1,23 +1,23 @@
 import { useEffect, useRef } from 'react';
 
+import {
+  calculateXRatio,
+  calculateYRatio,
+  fillContext,
+  setPositions,
+} from '@/components/Chart/util';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '@/style';
 
 export interface ChartProps {
   xDataset: number[];
   yDataset: number[];
-  maximumX: number;
-  maximumY: number;
-  leftThumbX: number;
-  rightThumbX: number;
   size: {
     width: number;
     height: number;
   };
-  revisedValues: {
-    revisedRigthX: number;
-    revisedLeftX: number;
-    revisedLeftY: number;
-  };
+  hasSlider: boolean;
+  leftThumbX?: number;
+  rightThumbX?: number;
 }
 
 const START_X = 0;
@@ -25,16 +25,16 @@ const START_X = 0;
 export default function Chart({
   xDataset,
   yDataset,
-  maximumX,
-  maximumY,
+  size,
+  hasSlider,
   leftThumbX,
   rightThumbX,
-  size,
-  revisedValues,
 }: ChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { width, height } = size;
-  const { revisedRigthX, revisedLeftX, revisedLeftY } = revisedValues;
+
+  const maximumX = Math.max(...xDataset);
+  const maximumY = Math.max(...yDataset);
 
   const renderCanvas = () => {
     if (!canvasRef.current) {
@@ -58,10 +58,12 @@ export default function Chart({
     context.strokeStyle = 'rgba(0, 0, 0, 0)';
 
     context.moveTo(START_X, height);
-    setPositions(context, xDataset, yDataset, maximumX, maximumY, width, height);
+    const xRatioDataset = xDataset.map(x => calculateXRatio(x, maximumX, width));
+    const yRatioDataset = xDataset.map(x => calculateYRatio(x, maximumY, height));
+    setPositions(context, xRatioDataset, yRatioDataset);
 
     context.stroke();
-    fillContext(context, height, 0, width, SECONDARY_COLOR);
+    fillContext(context, height, START_X, width, SECONDARY_COLOR);
   };
 
   const drawAciveChart = (leftX: number, rigthX: number) => {
@@ -73,13 +75,24 @@ export default function Chart({
 
     context.beginPath();
 
+    const leftThumbIndex = xDataset.findIndex(element => element === leftThumbX);
+    const leftY = yDataset[leftThumbIndex];
+
+    const revisedRigthX = calculateXRatio(rigthX, maximumX, width);
+    const revisedLeftX = calculateXRatio(leftX, maximumX, width);
+    const revisedLeftY = calculateYRatio(leftY, maximumY, height);
+
     const leftIndex = xDataset.findIndex(element => element === leftX);
 
-    const newXDataset = xDataset.filter(x => leftX <= x && x <= rigthX);
-    const newYDataset = yDataset.filter((_, index) => index >= leftIndex);
+    const newXRatioDataset = xDataset
+      .filter(x => leftX <= x && x <= rigthX)
+      .map(x => calculateXRatio(x, maximumX, width));
+    const newYRatioDataset = yDataset
+      .filter((_, index) => index >= leftIndex)
+      .map(x => calculateYRatio(x, maximumY, height));
 
     context.moveTo(revisedLeftX, revisedLeftY);
-    setPositions(context, newXDataset, newYDataset, maximumX, maximumY, width, height);
+    setPositions(context, newXRatioDataset, newYRatioDataset);
     context.stroke();
 
     fillContext(context, height, revisedLeftX, revisedRigthX, PRIMARY_COLOR);
@@ -91,44 +104,10 @@ export default function Chart({
 
   useEffect(() => {
     drawBackgroundChart();
-    drawAciveChart(leftThumbX, rightThumbX);
+    if (hasSlider && leftThumbX !== undefined && rightThumbX !== undefined) {
+      drawAciveChart(leftThumbX, rightThumbX);
+    }
   }, [leftThumbX, rightThumbX]);
 
   return <canvas ref={canvasRef}></canvas>;
 }
-
-const calculateXRatio = (rawX: number, maximumX: number, width: number): number =>
-  (rawX / maximumX) * width;
-
-const calculateYRatio = (rawY: number, maximumY: number, height: number): number =>
-  height - (rawY / maximumY) * height;
-
-const setPositions = (
-  context: CanvasRenderingContext2D,
-  xDataset: number[],
-  yDataset: number[],
-  maximumX: number,
-  maximumY: number,
-  width: number,
-  height: number,
-) => {
-  xDataset.forEach((rawX, index) => {
-    const rawY = yDataset[index];
-    const x = calculateXRatio(rawX, maximumX, width);
-    const y = calculateYRatio(rawY, maximumY, height);
-    context.lineTo(x, y);
-  });
-};
-
-const fillContext = (
-  context: CanvasRenderingContext2D,
-  height: number,
-  leftXPosition: number,
-  rigthXPosition: number,
-  bgColor: string,
-) => {
-  context.lineTo(rigthXPosition, height); // 좌표 맨 오른쪽 끝
-  context.lineTo(leftXPosition, height); // 좌표 시작으로 다시 가기
-  context.fillStyle = bgColor;
-  context.fill();
-};

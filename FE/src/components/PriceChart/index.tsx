@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import Chart from '@/components/Chart';
+import { calculateXRatio, calculateYRatio } from '@/components/Chart/util';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/components/PriceChart/constants';
 
 import * as S from './style';
@@ -50,13 +51,6 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     setLeftThumbX(newValue);
   };
 
-  const leftIndex = xDataset.findIndex(element => element === leftThumbX);
-  const leftY = yDataset[leftIndex];
-
-  const revisedRigthX = calculateXRatio(rightThumbX, maximumX, CANVAS_WIDTH);
-  const revisedLeftX = calculateXRatio(leftThumbX, maximumX, CANVAS_WIDTH);
-  const revisedLeftY = calculateYRatio(leftY, maximumY, CANVAS_HEIGHT);
-
   const moveLeftThumbX = (leftThumbX / maximumX) * 100;
   const moveRightThumbX = 100 - (rightThumbX / maximumX) * 100;
 
@@ -65,14 +59,11 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
       <Chart
         xDataset={xDataset}
         yDataset={yDataset}
-        maximumX={maximumX}
-        maximumY={maximumY}
+        size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+        hasSlider
         leftThumbX={leftThumbX}
         rightThumbX={rightThumbX}
-        size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
-        revisedValues={{ revisedRigthX, revisedLeftX, revisedLeftY }}
       />
-      <label>최소</label>
       <S.SliderController
         type="range"
         value={leftThumbX}
@@ -81,8 +72,6 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
         max={maximumX}
         onChange={handleMinPriceChange}
       />
-      <br />
-      <label>최대</label>
       <S.SliderController
         type="range"
         value={rightThumbX}
@@ -100,9 +89,3 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     </S.Container>
   );
 }
-
-const calculateXRatio = (rawX: number, currentMaximumX: number, width: number): number =>
-  (rawX / currentMaximumX) * width;
-
-const calculateYRatio = (rawY: number, currentMaximumY: number, height: number): number =>
-  height - (rawY / currentMaximumY) * height;
