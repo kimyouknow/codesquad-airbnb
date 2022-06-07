@@ -57,6 +57,9 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
   const revisedLeftX = calculateXRatio(leftThumbX, maximumX, CANVAS_WIDTH);
   const revisedLeftY = calculateYRatio(leftY, maximumY, CANVAS_HEIGHT);
 
+  const moveLeftThumbX = (leftThumbX / maximumX) * 100;
+  const moveRightThumbX = 100 - (rightThumbX / maximumX) * 100;
+
   return (
     <S.CanvasContainer>
       <Chart
@@ -70,7 +73,7 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
         revisedValues={{ revisedRigthX, revisedLeftX, revisedLeftY }}
       />
       <label>최소</label>
-      <input
+      <S.SliderController
         type="range"
         value={leftThumbX}
         step={xStep}
@@ -80,7 +83,7 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
       />
       <br />
       <label>최대</label>
-      <input
+      <S.SliderController
         type="range"
         value={rightThumbX}
         step={xStep}
@@ -88,6 +91,12 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
         max={maximumX}
         onChange={handleMaxPriceChange}
       />
+      <S.VirtualSlider>
+        <S.Track></S.Track>
+        <S.Range moveLeftThumbX={moveLeftThumbX} moveRightThumbX={moveRightThumbX}></S.Range>
+        <S.LeftThumb moveLeftThumbX={moveLeftThumbX}></S.LeftThumb>
+        <S.RightThumb moveRightThumbX={moveRightThumbX}></S.RightThumb>
+      </S.VirtualSlider>
     </S.CanvasContainer>
   );
 }
