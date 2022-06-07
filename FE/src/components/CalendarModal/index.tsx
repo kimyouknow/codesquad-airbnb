@@ -11,6 +11,7 @@ import {
   FIRST_MONTH,
   MONTH_LENGTH,
   DECREASE_YEAR,
+  DECREASE_MONTH,
 } from '@/components/CalendarModal/constants';
 
 import WindowModal from '../WindowModal';
@@ -19,6 +20,16 @@ import * as S from './style';
 interface CalendarModalProps {
   isModalOpen: boolean;
   handleOpenModal: () => void;
+}
+
+const SLIDE_ACTION = { LEFT: 'left', RIGHT: 'right', PAUSE: 'pause' };
+
+// FIXME: 아래처럼 변수의 값을 타입을 지정하고 싶은데 "Cannot find namespace 'SLIDE_ACTION'"에러가 나네요ㅠ
+// type actionType = SLIDE_ACTION.LEFT | SLIDE_ACTION.RIGHT | SLIDE_ACTION.PAUSE;
+
+interface SlideAction {
+  isSliding: boolean;
+  actionType: 'left' | 'right' | 'pause';
 }
 
 export default function CalendarModal({ isModalOpen, handleOpenModal }: CalendarModalProps) {
@@ -33,44 +44,55 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
 
   const [activeMonth, setActiveMonth] = useState(monthToday);
   const [slideXCount, setSlideXCount] = useState(1);
-  const [isRightSliding, setIsRightSliding] = useState(false);
-  const [isLeftSliding, setIsLeftSliding] = useState(false);
+  const [slideAction, setSlideAction] = useState<SlideAction>({
+    isSliding: false,
+    actionType: 'pause',
+  });
 
   const calendarHeaderDate = getMonthsWithYear(slideCardsLength, activeMonth, yearToday);
 
+  const initializeSlideAction = () => setSlideAction({ isSliding: false, actionType: 'pause' });
+
   const handleClickPreviousCalendar = () => {
-    setIsLeftSliding(true);
+    setSlideAction({ isSliding: true, actionType: 'left' });
     setSlideXCount(prev => prev - INCREASED_SLIDE_X_COUNT);
   };
 
   const handleClickNextCalendar = () => {
-    setIsRightSliding(true);
+    setSlideAction({ isSliding: true, actionType: 'right' });
     setSlideXCount(prev => prev + INCREASED_SLIDE_X_COUNT);
   };
 
   const handleTransitionEnd = () => {
     setSlideXCount(INITIAL_MOVE_X_COUNT);
-    if (isRightSliding) {
-      setIsRightSliding(false);
-      setActiveMonth(prevMonth => prevMonth + INCREASED_MONTH);
+    const { isSliding, actionType } = slideAction;
+    if (!isSliding) return;
+    switch (actionType) {
+      case 'left':
+        setActiveMonth(prevMonth => prevMonth - DECREASE_MONTH);
+        break;
+      case 'right':
+        setActiveMonth(prevMonth => prevMonth + INCREASED_MONTH);
+        break;
+      default:
     }
-    if (isLeftSliding) {
-      setIsLeftSliding(false);
-      setActiveMonth(prevMonth => prevMonth - INCREASED_MONTH);
-    }
+    initializeSlideAction();
   };
 
   return (
     <WindowModal show={true} handleOpenModal={handleOpenModal}>
       <S.CalendarContainer>
-        <button type="button" onClick={handleClickPreviousCalendar} disabled={isLeftSliding}>
+        <button
+          type="button"
+          onClick={handleClickPreviousCalendar}
+          disabled={slideAction.isSliding}
+        >
           이전달
         </button>
         <S.Wrapper>
           <S.ItemContainer
             slideXCount={slideXCount}
-            isLeftSliding={isLeftSliding}
-            isRightSliding={isRightSliding}
+            canTransition={slideAction.isSliding}
             onTransitionEnd={handleTransitionEnd}
             showingCardNum={showingCardNum}
           >
@@ -85,7 +107,7 @@ export default function CalendarModal({ isModalOpen, handleOpenModal }: Calendar
             ))}
           </S.ItemContainer>
         </S.Wrapper>
-        <button type="button" onClick={handleClickNextCalendar} disabled={isRightSliding}>
+        <button type="button" onClick={handleClickNextCalendar} disabled={slideAction.isSliding}>
           다음달
         </button>
       </S.CalendarContainer>

@@ -16,8 +16,7 @@ export const ItemContainer = styled.ul`
   display: flex;
   width: 100%;
   padding: 0; // TODO : reset css 적용시 삭제하기
-  transition: ${({ isRightSliding, isLeftSliding }) =>
-    (isRightSliding || isLeftSliding) && 'transform 0.2s linear 0s'};
+  transition: ${({ canTransition }) => canTransition && 'transform 0.2s linear 0s'};
   transform: ${({ slideXCount, showingCardNum }) =>
     `translateX(${-(100 / showingCardNum) * slideXCount}%)`};
 `;
