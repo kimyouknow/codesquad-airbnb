@@ -8,3 +8,4 @@ export const MONTH_LENGTH = 12;
 export const HIDDEN_CARD_NUM = 2;
 export const INCREASED_SLIDE_X_COUNT = 1;
 export const INITIAL_MOVE_X_COUNT = 1;
+export const SLIDE_ACTION = { LEFT: 'left', RIGHT: 'right', PAUSE: 'pause' } as const;
