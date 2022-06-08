@@ -28,6 +28,12 @@ interface SlideAction {
   actionType: typeof SLIDE_ACTION[keyof typeof SLIDE_ACTION];
 }
 
+export interface SelectedDateType {
+  year: number;
+  month: number;
+  date: number;
+}
+
 export default function CalendarCaoursel({
   initDate,
   itemGap,
@@ -43,6 +49,20 @@ export default function CalendarCaoursel({
   const [slideAction, setSlideAction] = useState<SlideAction>({
     isSliding: false,
     actionType: SLIDE_ACTION.PAUSE,
+  });
+
+  const currentDate = initDate.getDate();
+
+  const [checkIn, setCheckIn] = useState({
+    year: initYear,
+    month: initMonth,
+    date: currentDate,
+  });
+
+  const [checkOut, setCheckOut] = useState({
+    year: initYear,
+    month: initMonth,
+    date: currentDate + 1,
   });
 
   const calendarHeaderDate = getMonthsWithYear(slideCardsLength, activeMonth, initYear);
@@ -76,29 +96,110 @@ export default function CalendarCaoursel({
     initializeSlideAction();
   };
 
+  const updateCheckInWhenPriorToCheckIn = ({ year, month, date }: SelectedDateType) => {
+    setCheckIn({
+      ...checkIn,
+      year,
+      month,
+      date,
+    });
+
+    setCheckOut({
+      ...checkOut,
+      year: 0,
+      month: 0,
+      date: 0,
+    });
+  };
+
+  const updateCheckOutWhenWithinRange = ({ year, month, date }: SelectedDateType) => {
+    setCheckIn({
+      ...checkIn,
+      year: checkIn.year,
+      month: checkIn.month,
+      date: checkIn.date,
+    });
+
+    setCheckOut({
+      ...checkOut,
+      year,
+      month,
+      date,
+    });
+  };
+
+  const handleClickDay = ({ year, month, date }: SelectedDateType) => {
+    const isPossibleYear = checkIn.year <= year;
+    const isPossibleMonth = checkIn.month <= month;
+    const isResetedCheckIn = checkIn.year === 0 && checkIn.month === 0 && checkIn.year === 0;
+    const isResetedCheckOut = checkOut.year === 0 && checkOut.month === 0 && checkOut.year === 0;
+
+    if (!isPossibleYear || !isPossibleMonth || checkIn.date > date || isResetedCheckIn) {
+      updateCheckInWhenPriorToCheckIn({ year, month, date });
+      return;
+    }
+
+    if (checkIn.date <= date || isResetedCheckOut) {
+      updateCheckOutWhenWithinRange({ year, month, date });
+      return;
+    }
+  };
+
+  const resetCheckInNout = () => {
+    setCheckIn({
+      ...checkIn,
+      year: 0,
+      month: 0,
+      date: 0,
+    });
+
+    setCheckOut({
+      ...checkOut,
+      year: 0,
+      month: 0,
+      date: 0,
+    });
+  };
+
   return (
-    <S.CalendarContainer>
-      <button type="button" onClick={handleClickPreviousCalendar} disabled={slideAction.isSliding}>
-        이전달
+    <>
+      <button type="button" onClick={resetCheckInNout}>
+        체트인
       </button>
-      <S.Wrapper>
-        <S.ItemContainer
-          slideXCount={slideXCount}
-          canTransition={slideAction.isSliding}
-          onTransitionEnd={handleTransitionEnd}
-          showingCardNum={showingCardNum}
+      <button type="button" onClick={resetCheckInNout}>
+        체트아웃
+      </button>
+      <S.CalendarContainer>
+        <button
+          type="button"
+          onClick={handleClickPreviousCalendar}
+          disabled={slideAction.isSliding}
         >
-          {calendarHeaderDate.map(({ year, month }) => (
-            <S.Item key={`activeMonth-${month}`} itemGap={itemGap} showingCardNum={showingCardNum}>
-              <Calendar activeMonth={month} activeYear={year} />
-            </S.Item>
-          ))}
-        </S.ItemContainer>
-      </S.Wrapper>
-      <button type="button" onClick={handleClickNextCalendar} disabled={slideAction.isSliding}>
-        다음달
-      </button>
-    </S.CalendarContainer>
+          이전달
+        </button>
+        <S.Wrapper>
+          <S.ItemContainer
+            slideXCount={slideXCount}
+            canTransition={slideAction.isSliding}
+            onTransitionEnd={handleTransitionEnd}
+            showingCardNum={showingCardNum}
+          >
+            {calendarHeaderDate.map(({ year, month }) => (
+              <S.Item
+                key={`activeMonth-${month}`}
+                itemGap={itemGap}
+                showingCardNum={showingCardNum}
+              >
+                <Calendar activeMonth={month} activeYear={year} handleClickDay={handleClickDay} />
+              </S.Item>
+            ))}
+          </S.ItemContainer>
+        </S.Wrapper>
+        <button type="button" onClick={handleClickNextCalendar} disabled={slideAction.isSliding}>
+          다음달
+        </button>
+      </S.CalendarContainer>
+    </>
   );
 }
 
