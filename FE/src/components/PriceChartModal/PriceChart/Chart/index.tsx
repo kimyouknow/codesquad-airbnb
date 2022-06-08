@@ -5,7 +5,7 @@ import {
   calculateYRatio,
   fillContext,
   setPositions,
-} from '@/components/PriceChart/Chart/util';
+} from '@/components/PriceChartModal/PriceChart/Chart/util';
 import { PRIMARY_COLOR, SECONDARY_COLOR } from '@/style';
 
 export interface ChartProps {

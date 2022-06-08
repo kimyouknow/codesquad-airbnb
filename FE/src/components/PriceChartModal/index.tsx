@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import PriceChart from '@/components/PriceChart';
+import PriceChart from '@/components/PriceChartModal/PriceChart';
+import WindowModal from '@/components/WindowModal';
 import { PriceChartData, PriceChartDataProps } from '@/data/chartData';
-
-import WindowModal from '../WindowModal';
 
 interface CalendarModalProps {
   isModalOpen: boolean;

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import Chart from '@/components/PriceChart/Chart';
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/components/PriceChart/constants';
-import MultiRangerSlider from '@/components/PriceChart/MultiRangerSlider';
-import PriceInfo from '@/components/PriceChart/PriceInfo';
+import Chart from '@/components/PriceChartModal/PriceChart/Chart';
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/components/PriceChartModal/PriceChart/constants';
+import MultiRangerSlider from '@/components/PriceChartModal/PriceChart/MultiRangerSlider';
+import PriceInfo from '@/components/PriceChartModal/PriceChart/PriceInfo';
 import { PriceChartDataProps } from '@/data/chartData';
 
 import * as S from './style';

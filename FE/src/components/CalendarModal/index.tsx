@@ -1,6 +1,5 @@
-import CalendarCaoursel from '@/components/CalendarCourousel';
-
-import WindowModal from '../WindowModal';
+import CalendarCaoursel from '@/components/CalendarModal/CalendarCourousel';
+import WindowModal from '@/components/WindowModal';
 
 interface CalendarModalProps {
   isModalOpen: boolean;
