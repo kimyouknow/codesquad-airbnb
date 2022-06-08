@@ -1,10 +1,17 @@
+import { SelectedDateType } from '@/components/CalendarCourousel';
 import { months, daysOfWeek, saturdayNumber } from '@/constants/constants';
 
 import * as S from './style';
 
+interface CalendarInfoType {
+  activeYear: number;
+  activeMonth: number;
+}
+
 interface CalendarProps {
   activeYear: number;
   activeMonth: number;
+  handleClickDay: (selectedDate: SelectedDateType) => void;
 }
 
 interface DateProps {
@@ -26,7 +33,7 @@ interface DatesProps {
   addedDate: number;
 }
 
-export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
+export default function Calendar({ activeYear, activeMonth, handleClickDay }: CalendarProps) {
   const dates = getCalendarInfo({ activeYear, activeMonth });
   return (
     <S.Container>
@@ -38,14 +45,19 @@ export default function Calendar({ activeYear, activeMonth }: CalendarProps) {
       </S.WeekContainer>
       <S.WeekContainer>
         {dates.map(({ id, date }) => (
-          <S.DayItem key={id}>{date}</S.DayItem>
+          <S.DayItem
+            key={id}
+            onClick={() => handleClickDay({ year: activeYear, month: activeMonth, date })}
+          >
+            {date}
+          </S.DayItem>
         ))}
       </S.WeekContainer>
     </S.Container>
   );
 }
 
-const getCalendarInfo = ({ activeYear, activeMonth }: CalendarProps): CalendarDateProps[] => {
+const getCalendarInfo = ({ activeYear, activeMonth }: CalendarInfoType): CalendarDateProps[] => {
   const prevMonthLastFullDate = new Date(activeYear, activeMonth, 0);
   const prevMonthLastDay = prevMonthLastFullDate.getDay();
   const prevMonthLastDate = prevMonthLastFullDate.getDate();
