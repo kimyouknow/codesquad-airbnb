@@ -28,6 +28,28 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
   const [leftThumbX, setLeftThumbX] = useState(0);
   const [rightThumbX, setRightThumbX] = useState(maximumX);
 
+  const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+    const newValue = Number(value);
+    if (newValue >= rightThumbX) {
+      setRightThumbX(newValue + xStep);
+    }
+    setLeftThumbX(newValue);
+  };
+
+  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+    const newValue = Number(value);
+    if (newValue <= leftThumbX) {
+      setLeftThumbX(newValue - xStep);
+    }
+    setRightThumbX(newValue);
+  };
+
   return (
     <S.Container containerWidth={CANVAS_HEIGHT} containerHeight={CANVAS_WIDTH}>
       <Chart
@@ -39,12 +61,13 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
         rightThumbX={rightThumbX}
       />
       <MultiRangerSlider
-        leftThumbX={leftThumbX}
-        rightThumbX={rightThumbX}
-        setLeftThumbX={setLeftThumbX}
-        setRightThumbX={setRightThumbX}
-        xStep={xStep}
-        maximumX={maximumX}
+        step={xStep}
+        max={maximumX}
+        min={0}
+        leftValue={leftThumbX}
+        rightValue={rightThumbX}
+        leftOnChange={handleMinPriceChange}
+        rightOnChange={handleMaxPriceChange}
       />
     </S.Container>
   );
