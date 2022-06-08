@@ -7,16 +7,17 @@ export const Container = styled.div`
   box-shadow: 0px 4px 10px rgba(51, 51, 51, 0.1), 0px 0px 4px rgba(51, 51, 51, 0.05);
   border-radius: 40px;
   border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+
   gap: 16px;
   padding: 52px 64px;
 `;
 
 // FIXME: 임시 스타일 -> 선택자 정리할 필요가 있어요!
 export const PriceInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   h3 {
     font-weight: 700;
     font-size: 16px;
@@ -39,8 +40,11 @@ export const PriceInfo = styled.div`
 export const ChartContainer = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   div:last-child {
     /* FIXME: multi ranger 세부위치 조정 */
-    top: -5px;
   }
 `;

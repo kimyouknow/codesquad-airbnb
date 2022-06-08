@@ -6,6 +6,7 @@ export const CalendarContainer = styled.div`
   height: 382px;
   display: 'flex';
   gap: '12px';
+  background-color: #fff;
 `;
 
 export const Wrapper = styled.div`
