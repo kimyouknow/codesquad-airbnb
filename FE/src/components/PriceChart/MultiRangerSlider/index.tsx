@@ -23,7 +23,6 @@ export default function MultiRangerSlider({
 }: MultiRangerSliderProps) {
   const moveLeftThumbX = (leftValue / max) * 100;
   const moveRightThumbX = 100 - (rightValue / max) * 100;
-  console.log(leftValue, rightValue);
   return (
     <S.Container width={style.width}>
       <S.InputRange
