@@ -4,7 +4,6 @@ import Chart from '@/components/PriceChart/Chart';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/components/PriceChart/constants';
 import MultiRangerSlider from '@/components/PriceChart/MultiRangerSlider';
 import PriceInfo from '@/components/PriceChart/PriceInfo';
-import { changeNumberToKoreanLocaleMoney, getNumberArrAverage } from '@/utils';
 
 import * as S from './style';
 

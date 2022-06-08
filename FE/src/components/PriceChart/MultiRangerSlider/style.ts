@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-const THUMB_SIZE = '16px';
+const THUMB_SIZE = '20px';
 
 export const Container = styled.div`
   display: flex;
@@ -20,8 +20,8 @@ const thumb = css`
   height: ${THUMB_SIZE};
   z-index: 10;
   border-radius: 50%;
-  background-color: tomato;
-  box-shadow: 0 0 3px 0 #222;
+  background: url('/svg/pauseCircle.svg') no-repeat center center;
+  box-shadow: 0 0 2px 0 #222;
 `;
 
 export const InputRange = styled.input`
