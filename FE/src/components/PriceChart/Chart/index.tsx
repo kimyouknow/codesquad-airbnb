@@ -59,7 +59,7 @@ export default function Chart({
 
     context.moveTo(START_X, height);
     const xRatioDataset = xDataset.map(x => calculateXRatio(x, maximumX, width));
-    const yRatioDataset = xDataset.map(x => calculateYRatio(x, maximumY, height));
+    const yRatioDataset = xDataset.map(y => calculateYRatio(y, maximumY, height));
     setPositions(context, xRatioDataset, yRatioDataset);
 
     context.stroke();
@@ -89,7 +89,7 @@ export default function Chart({
       .map(x => calculateXRatio(x, maximumX, width));
     const newYRatioDataset = yDataset
       .filter((_, index) => index >= leftIndex)
-      .map(x => calculateYRatio(x, maximumY, height));
+      .map(y => calculateYRatio(y, maximumY, height));
 
     context.moveTo(revisedLeftX, revisedLeftY);
     setPositions(context, newXRatioDataset, newYRatioDataset);

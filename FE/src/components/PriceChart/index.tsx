@@ -3,6 +3,8 @@ import { useState } from 'react';
 import Chart from '@/components/PriceChart/Chart';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/components/PriceChart/constants';
 import MultiRangerSlider from '@/components/PriceChart/MultiRangerSlider';
+import PriceInfo from '@/components/PriceChart/PriceInfo';
+import { changeNumberToKoreanLocaleMoney, getNumberArrAverage } from '@/utils';
 
 import * as S from './style';
 
@@ -22,6 +24,7 @@ interface PriceChartProps {
 export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChartProps) {
   const xDataset = chartInfo.map(element => element[axis.x]);
   const yDataset = chartInfo.map(element => element[axis.y]);
+  const minimunX = Math.min(...xDataset);
   const maximumX = Math.max(...xDataset);
   const maximumY = Math.max(...yDataset);
 
@@ -49,9 +52,18 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     }
     setRightThumbX(newValue);
   };
+  // FIXME: react에서 Array.prototype.customMehtod 같은 체이닝을 어떻게 선언할까?
+  const selectablePriceDataset = xDataset.filter(x => leftThumbX <= x && x <= rightThumbX);
+  const selectablePriceAverage =
+    selectablePriceDataset.reduce((a, b) => a + b) / selectablePriceDataset.length;
 
   return (
     <S.Container containerWidth={CANVAS_HEIGHT} containerHeight={CANVAS_WIDTH}>
+      <PriceInfo
+        minimunX={minimunX}
+        maximumX={maximumX}
+        selectablePriceAverage={selectablePriceAverage}
+      />
       <Chart
         xDataset={xDataset}
         yDataset={yDataset}
