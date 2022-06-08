@@ -2,13 +2,12 @@ import styled, { css } from 'styled-components';
 
 const THUMB_SIZE = '20px';
 
-export const Container = styled.div`
+export const Container = styled.div<{ width: number }>`
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 300px;
-  height: 10px;
+  width: ${({ width }) => `${width}px`};
   background-color: wheat;
 `;
 

@@ -57,29 +57,32 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     selectablePriceDataset.reduce((a, b) => a + b) / selectablePriceDataset.length;
 
   return (
-    <S.Container containerWidth={CANVAS_HEIGHT} containerHeight={CANVAS_WIDTH}>
+    <S.Container>
       <PriceInfo
         minimunX={minimunX}
         maximumX={maximumX}
         selectablePriceAverage={selectablePriceAverage}
       />
-      <Chart
-        xDataset={xDataset}
-        yDataset={yDataset}
-        size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
-        hasSlider
-        leftThumbX={leftThumbX}
-        rightThumbX={rightThumbX}
-      />
-      <MultiRangerSlider
-        step={xStep}
-        max={maximumX}
-        min={0}
-        leftValue={leftThumbX}
-        rightValue={rightThumbX}
-        leftOnChange={handleMinPriceChange}
-        rightOnChange={handleMaxPriceChange}
-      />
+      <S.ChartContainer>
+        <Chart
+          xDataset={xDataset}
+          yDataset={yDataset}
+          size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+          hasSlider
+          leftThumbX={leftThumbX}
+          rightThumbX={rightThumbX}
+        />
+        <MultiRangerSlider
+          style={{ width: CANVAS_WIDTH }}
+          step={xStep}
+          max={maximumX}
+          min={0}
+          leftValue={leftThumbX}
+          rightValue={rightThumbX}
+          leftOnChange={handleMinPriceChange}
+          rightOnChange={handleMaxPriceChange}
+        />
+      </S.ChartContainer>
     </S.Container>
   );
 }

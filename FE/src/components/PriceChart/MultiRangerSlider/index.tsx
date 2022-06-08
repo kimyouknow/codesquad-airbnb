@@ -1,6 +1,7 @@
 import * as S from './style';
 
 interface MultiRangerSliderProps {
+  style: { width: number };
   step: number;
   max: number;
   min: number;
@@ -11,6 +12,7 @@ interface MultiRangerSliderProps {
 }
 
 export default function MultiRangerSlider({
+  style,
   step,
   max,
   min,
@@ -23,7 +25,7 @@ export default function MultiRangerSlider({
   const moveRightThumbX = 100 - (rightValue / max) * 100;
 
   return (
-    <S.Container>
+    <S.Container width={style.width}>
       <S.InputRange
         type="range"
         value={leftValue}
