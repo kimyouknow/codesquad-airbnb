@@ -45,7 +45,7 @@ export default function MultiRangerSlider({
 
   return (
     <S.Container>
-      <S.VirtualSlider
+      <S.InputRange
         type="range"
         value={leftThumbX}
         step={xStep}
@@ -53,7 +53,7 @@ export default function MultiRangerSlider({
         max={maximumX}
         onChange={handleMinPriceChange}
       />
-      <S.VirtualSlider
+      <S.InputRange
         type="range"
         value={rightThumbX}
         step={xStep}
@@ -61,12 +61,7 @@ export default function MultiRangerSlider({
         max={maximumX}
         onChange={handleMaxPriceChange}
       />
-      <S.SliderController>
-        <S.Track></S.Track>
-        <S.Range moveLeftThumbX={moveLeftThumbX} moveRightThumbX={moveRightThumbX}></S.Range>
-        <S.LeftThumb moveLeftThumbX={moveLeftThumbX}></S.LeftThumb>
-        <S.RightThumb moveRightThumbX={moveRightThumbX}></S.RightThumb>
-      </S.SliderController>
+      <S.ActiveRange moveLeftThumbX={moveLeftThumbX} moveRightThumbX={moveRightThumbX} />
     </S.Container>
   );
 }
