@@ -54,7 +54,7 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
   // FIXME: react에서 Array.prototype.customMehtod 같은 체이닝을 어떻게 선언할까?
   const selectablePriceDataset = xDataset.filter(x => leftThumbX <= x && x <= rightThumbX);
   const selectablePriceAverage =
-    selectablePriceDataset.reduce((a, b) => a + b) / selectablePriceDataset.length;
+    selectablePriceDataset.reduce((a, b) => a + b, 0) / selectablePriceDataset.length;
 
   return (
     <S.Container>

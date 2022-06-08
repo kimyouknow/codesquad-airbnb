@@ -23,7 +23,7 @@ const thumb = css`
   box-shadow: 0 0 2px 0 #222;
 `;
 
-export const InputRange = styled.input`
+export const InputRange = styled.input<{ isLeftThumb: boolean }>`
   width: 100%;
   -webkit-appearance: none;
   position: absolute;
@@ -31,6 +31,7 @@ export const InputRange = styled.input`
   z-index: 3;
   background: transparent;
   border-radius: 5px;
+  ${({ isLeftThumb }) => (isLeftThumb ? `left: -10px` : `right: -10px`)};
   &::-webkit-slider-thumb {
     ${thumb}
   }
@@ -47,8 +48,6 @@ export const ActiveRange = styled.div<{ moveLeftThumbX: number; moveRightThumbX:
   z-index: 2;
   left: ${({ moveLeftThumbX }) => moveLeftThumbX}%;
   right: ${({ moveRightThumbX }) => moveRightThumbX}%;
-  top: 0;
-  bottom: 0;
   border-radius: 5px;
   background-color: tomato;
 `;
