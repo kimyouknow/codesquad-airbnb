@@ -20,6 +20,7 @@ export default function CalendarArea({ wrapperId }: CalendarAreaProps) {
         wrapperId={wrapperId}
         isOpen={isCalendarModalOpen}
         onClose={handleCalendarModalOpen}
+        customStyle={S.CalendarModal}
       >
         <CalendarCaoursel initDate={new Date()} itemGap={26} showingCardNum={2} hiddenCardNum={2} />
       </WithModal>

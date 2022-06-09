@@ -6,7 +6,7 @@ export const Container = styled.div`
   align-items: center;
   padding: 0px;
 
-  position: absolute;
+  position: relative;
   width: 916px;
   height: 76px;
   left: 262px;
@@ -57,3 +57,80 @@ export const Label = styled.h3`
   order: 0;
   flex-grow: 0;
 `;
+
+const commentModalOverlay = css`
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  z-index: 1022;
+  background-color: 'rgba(255, 255, 255, 0.75)';
+`;
+const commentModalContent = css`
+  display: inline-block;
+  z-index: 1012;
+  position: relative;
+  border-radius: 6px;
+  user-select: none;
+  background: #ffffff;
+  border-radius: 40px;
+  border: 1px solid black;
+  box-shadow: 0px 4px 10px rgba(51, 51, 51, 0.1), 0px 0px 4px rgba(51, 51, 51, 0.05);
+  display: flex;
+  flex-direction: column;
+`;
+const commentModalButton = css`
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  background: transparent;
+  border: none;
+  font-size: 30px;
+`;
+
+export const CalendarModal = {
+  overlay: css`
+    ${commentModalOverlay}
+  `,
+  content: css`
+    ${commentModalContent}
+    top: 180px;
+    left: 300px;
+    width: 500px;
+    height: 400px;
+  `,
+  button: css`
+    ${commentModalButton}
+  `,
+};
+
+export const PriceModal = {
+  overlay: css`
+    ${commentModalOverlay}
+  `,
+  content: css`
+    ${commentModalContent}
+    top: 180px;
+    left: 300px;
+    width: 500px;
+    height: 400px;
+  `,
+  button: css`
+    ${commentModalButton}
+  `,
+};
+
+export const PeopleModal = {
+  overlay: css`
+    ${commentModalOverlay}
+  `,
+  content: css`
+    ${commentModalContent}
+    top: 180px;
+    left: 300px;
+  `,
+  button: css`
+    ${commentModalButton}
+  `,
+};

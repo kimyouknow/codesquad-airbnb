@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { css } from 'styled-components';
 
 import PriceChart from '@/components/SearchBox/PriceArea/PriceChart';
 import { PriceChartData, PriceChartDataProps } from '@/data/chartData';
@@ -28,6 +29,7 @@ export default function PriceArea({ wrapperId }: PriceAreaProps) {
           wrapperId={wrapperId}
           isOpen={isPriceChartModalOpen}
           onClose={handlePriceChartModalOpen}
+          customStyle={S.PriceModal}
         >
           <PriceChart
             chartInfo={chartInfo}
