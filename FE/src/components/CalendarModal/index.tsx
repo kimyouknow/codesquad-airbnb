@@ -1,5 +1,5 @@
 import CalendarCaoursel from '@/components/CalendarModal/CalendarCourousel';
-import WindowModal from '@/components/WindowModal';
+import Modal from '@/components/Modals/Modal';
 
 interface CalendarModalProps {
   isModalOpen: boolean;
@@ -8,8 +8,8 @@ interface CalendarModalProps {
 
 export default function CalendarModal({ isModalOpen, handleOpenModal }: CalendarModalProps) {
   return (
-    <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
+    <Modal isOpen={isModalOpen} onClose={handleOpenModal}>
       <CalendarCaoursel initDate={new Date()} itemGap={26} showingCardNum={2} hiddenCardNum={2} />
-    </WindowModal>
+    </Modal>
   );
 }

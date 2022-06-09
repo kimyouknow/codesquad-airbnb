@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import Modal from '@/components/Modals/Modal';
 import PriceChart from '@/components/PriceChartModal/PriceChart';
-import WindowModal from '@/components/WindowModal';
 import { PriceChartData, PriceChartDataProps } from '@/data/chartData';
 
 interface CalendarModalProps {
@@ -17,7 +17,7 @@ export default function PriceChartModal({ isModalOpen, handleOpenModal }: Calend
     setChartInfo(PriceChartData);
   }, []);
   return (
-    <WindowModal show={isModalOpen} handleOpenModal={handleOpenModal}>
+    <Modal isOpen={isModalOpen} onClose={handleOpenModal}>
       {chartInfo && (
         <PriceChart
           chartInfo={chartInfo}
@@ -26,6 +26,6 @@ export default function PriceChartModal({ isModalOpen, handleOpenModal }: Calend
           yStep={1}
         />
       )}
-    </WindowModal>
+    </Modal>
   );
 }
