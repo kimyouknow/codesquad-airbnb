@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import Calendar from '@/components/CalendarModal/CalendarCourousel/Calendar';
+import Calendar from '@/components/SearchBox/CalendarModal/CalendarCourousel/Calendar';
 import {
   LAST_MONTH,
   INCREASED_YEAR,
@@ -12,7 +12,7 @@ import {
   DECREASE_YEAR,
   DECREASE_MONTH,
   SLIDE_ACTION,
-} from '@/components/CalendarModal/CalendarCourousel/constants';
+} from '@/components/SearchBox/CalendarModal/CalendarCourousel/constants';
 
 import * as S from './style';
 

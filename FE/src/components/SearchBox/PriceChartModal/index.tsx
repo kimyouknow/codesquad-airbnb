@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import Modal from '@/components/Modals/Modal';
-import PriceChart from '@/components/PriceChartModal/PriceChart';
+import PriceChart from '@/components/SearchBox/PriceChartModal/PriceChart';
 import { PriceChartData, PriceChartDataProps } from '@/data/chartData';
 
 interface CalendarModalProps {
