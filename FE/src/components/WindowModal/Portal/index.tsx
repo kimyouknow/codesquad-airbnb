@@ -15,7 +15,7 @@ function createWrapperAndAppendToBody(wrapperId: string) {
 }
 
 function Potal({ children }: PortalProps) {
-  useScrollLock(true);
+  useScrollLock(true); // TODO: advanced 버전으로 변경해보기
 
   let rootElement = document.getElementById('modal');
 
