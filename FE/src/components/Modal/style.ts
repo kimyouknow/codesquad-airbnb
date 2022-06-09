@@ -11,12 +11,14 @@ export const Overlay = styled.div`
 `;
 
 export const Content = styled.div`
-  margin-top: 200px;
   display: inline-block;
   z-index: 1012;
   position: relative;
   border-radius: 6px;
   user-select: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 export const CloseButton = styled.button`
