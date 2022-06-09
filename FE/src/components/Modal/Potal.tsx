@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import useScrollLock from '@/hooks/useScrollLock';
@@ -10,20 +10,36 @@ export interface PortalProps {
 }
 
 export default function Potal({ children, wrapperId }: PortalProps) {
+  const [potalWrapper, setPotalWrapper] = useState<HTMLElement | null>(null);
   useScrollLock(true); // TODO: advanced 버전으로 변경해보기
 
-  const potalContainer = getRootElementById(wrapperId);
+  useLayoutEffect(() => {
+    const { isCreated, wrapper } = getRootElementById(wrapperId);
+    setPotalWrapper(wrapper);
+    return () => {
+      if (isCreated) {
+        removeElement(wrapper);
+      }
+    };
+  }, [wrapperId]);
 
-  return createPortal(children, potalContainer);
+  if (!potalWrapper) return null;
+
+  return createPortal(children, potalWrapper);
 }
 
-const getRootElementById = (documentId: string) => {
-  let rootElement = document.getElementById(documentId);
+const removeElement = (wrapper: HTMLElement) => {
+  wrapper.parentNode?.removeChild(wrapper);
+};
 
-  if (!rootElement) {
-    rootElement = createWrapperAndAppendToBody(documentId);
+const getRootElementById = (documentId: string) => {
+  let wrapper = document.getElementById(documentId);
+  let isCreated = false;
+  if (!wrapper) {
+    wrapper = createWrapperAndAppendToBody(documentId);
+    isCreated = true;
   }
-  return rootElement;
+  return { isCreated, wrapper };
 };
 
 const createWrapperAndAppendToBody = (wrapperId: string) => {
