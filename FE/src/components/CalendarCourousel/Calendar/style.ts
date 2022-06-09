@@ -14,7 +14,7 @@ export const CalendarTitle = styled.div`
   width: 100%;
 `;
 
-export const WeekContainer = styled.ul`
+const calendarWeekConater = css`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   width: 100%;
@@ -22,9 +22,18 @@ export const WeekContainer = styled.ul`
   list-style: none; // Todo: global style로 빼기
 `;
 
+export const WeekContainer = styled.ul`
+  ${calendarWeekConater}
+`;
+
 const textCenter = css`
   text-align: center;
 `;
+
+export const WeekDayItemContainer = styled.ul`
+  ${calendarWeekConater}
+`;
+
 export const WeekDayItem = styled.li`
   ${textCenter}
 `;

@@ -16,7 +16,8 @@ export interface FullDateProps {
 
 interface CalendarProps extends CalendarInfoType {
   handleClickDay: (selectedDate: SelectedDateType) => void;
-  handleMouseOverDay: (mouseOveredDate: SelectedDateType) => void;
+  handleMouseOverDay: (selectedDate: SelectedDateType) => void;
+  handleMouseLeaveCalendar: () => void;
   checkIn: FullDateProps;
   checkOut: FullDateProps;
 }
@@ -42,6 +43,7 @@ export default function Calendar({
   month,
   handleClickDay,
   handleMouseOverDay,
+  handleMouseLeaveCalendar,
   checkIn,
   checkOut,
 }: CalendarProps) {
@@ -67,12 +69,12 @@ export default function Calendar({
   return (
     <S.Container>
       <S.CalendarTitle>{`${months[month]} ${year}`}</S.CalendarTitle>
-      <S.WeekContainer>
+      <S.WeekDayItemContainer>
         {daysOfWeek.map(day => (
           <S.WeekDayItem key={`day-${day}`}>{day}</S.WeekDayItem>
         ))}
-      </S.WeekContainer>
-      <S.WeekContainer>
+      </S.WeekDayItemContainer>
+      <S.WeekContainer onMouseLeave={handleMouseLeaveCalendar}>
         {dates.map(({ id, date }) => (
           <S.DayItem
             key={id}

@@ -171,6 +171,16 @@ export default function CalendarCaoursel({
     }
   };
 
+  const handleMouseLeaveCalendar = () => {
+    setCheckOut({
+      ...checkOut,
+      year: 0,
+      month: 0,
+      date: 0,
+      isSelectedDone: false,
+    });
+  };
+
   const resetCheckInNout = () => {
     setCheckIn({
       ...checkIn,
@@ -221,6 +231,7 @@ export default function CalendarCaoursel({
                   year={year}
                   handleClickDay={handleClickDay}
                   handleMouseOverDay={handleMouseOverDay}
+                  handleMouseLeaveCalendar={handleMouseLeaveCalendar}
                   checkIn={checkIn}
                   checkOut={checkOut}
                 />
