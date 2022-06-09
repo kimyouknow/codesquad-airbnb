@@ -79,6 +79,7 @@ const commentModalContent = css`
   box-shadow: 0px 4px 10px rgba(51, 51, 51, 0.1), 0px 0px 4px rgba(51, 51, 51, 0.05);
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 `;
 const commentModalButton = css`
   position: absolute;
@@ -95,10 +96,11 @@ export const CalendarModal = {
   `,
   content: css`
     ${commentModalContent}
-    top: 180px;
+    top: 200px;
     left: 300px;
-    width: 500px;
-    height: 400px;
+    width: 916px;
+    height: 512px;
+    padding: 70px 97px;
   `,
   button: css`
     ${commentModalButton}
@@ -111,10 +113,10 @@ export const PriceModal = {
   `,
   content: css`
     ${commentModalContent}
-    top: 180px;
-    left: 300px;
-    width: 500px;
-    height: 400px;
+    top: 200px;
+    left: 500px;
+    width: 493px;
+    height: 364px;
   `,
   button: css`
     ${commentModalButton}

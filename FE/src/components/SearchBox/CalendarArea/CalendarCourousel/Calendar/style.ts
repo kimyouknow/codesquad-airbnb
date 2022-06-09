@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { FullDateProps } from '@/components/CalendarCourousel/Calendar';
+import { FullDateProps } from '@/components/SearchBox/CalendarArea/CalendarCourousel/Calendar';
 
 export const Container = styled.div`
   display: flex;
