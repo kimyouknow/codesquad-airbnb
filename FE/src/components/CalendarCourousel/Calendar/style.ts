@@ -1,4 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+import { FullDateProps } from '@/components/CalendarCourousel/Calendar';
 
 export const Container = styled.div`
   display: flex;
@@ -20,6 +22,25 @@ export const WeekContainer = styled.ul`
   list-style: none; // Todo: global style로 빼기
 `;
 
-export const DayItem = styled.li`
+const textCenter = css`
   text-align: center;
+`;
+export const WeekDayItem = styled.li`
+  ${textCenter}
+`;
+
+export const DayItem = styled.li<{
+  checkIn: FullDateProps;
+  checkOut: FullDateProps;
+  isSelectedDatePoint: boolean;
+  isSelectedDateRange: boolean;
+}>`
+  ${textCenter}
+  :hover {
+    background-color: wheat;
+  }
+  background-color: ${({ isSelectedDatePoint }) => (isSelectedDatePoint ? '#808080' : '')};
+  background-color: ${({ isSelectedDateRange }) => (isSelectedDateRange ? '#D3D3D3' : '')};
+  border-radius: 50%;
+  margin: 10px;
 `;

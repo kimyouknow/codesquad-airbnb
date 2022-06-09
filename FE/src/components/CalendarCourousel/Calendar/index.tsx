@@ -4,21 +4,25 @@ import { months, daysOfWeek, saturdayNumber } from '@/constants/constants';
 import * as S from './style';
 
 interface CalendarInfoType {
-  activeYear: number;
-  activeMonth: number;
-}
-
-interface CalendarProps {
-  activeYear: number;
-  activeMonth: number;
-  handleClickDay: (selectedDate: SelectedDateType) => void;
-}
-
-interface DateProps {
   year: number;
   month: number;
-  isAciveMonth: boolean;
+}
+
+export interface FullDateProps {
+  year: number;
+  month: number;
   date: number;
+}
+
+interface CalendarProps extends CalendarInfoType {
+  handleClickDay: (selectedDate: SelectedDateType) => void;
+  handleMouseOverDay: (mouseOveredDate: SelectedDateType) => void;
+  checkIn: FullDateProps;
+  checkOut: FullDateProps;
+}
+
+interface DateProps extends FullDateProps {
+  isAciveMonth: boolean;
 }
 
 interface CalendarDateProps extends DateProps {
@@ -33,21 +37,51 @@ interface DatesProps {
   addedDate: number;
 }
 
-export default function Calendar({ activeYear, activeMonth, handleClickDay }: CalendarProps) {
-  const dates = getCalendarInfo({ activeYear, activeMonth });
+export default function Calendar({
+  year,
+  month,
+  handleClickDay,
+  handleMouseOverDay,
+  checkIn,
+  checkOut,
+}: CalendarProps) {
+  const dates = getCalendarInfo({ year, month });
+
+  const checkIsSelectedDatePoint = (date: number) => {
+    const isEqualWithCheckIn =
+      checkIn.year === year && checkIn.month === month && checkIn.date === date;
+    const isEqualWithCheckOut =
+      checkOut.year === year && checkOut.month === month && checkOut.date === date;
+
+    return isEqualWithCheckIn || isEqualWithCheckOut;
+  };
+
+  const checkIsSelectedDateRange = (date: number) => {
+    const isInSelectedYearRange = checkIn.year <= year && year <= checkOut.year;
+    const isInSelectedMonthRange = checkIn.month <= month && month <= checkOut.month;
+    const isInSelectedDateRange = checkIn.date < date && date < checkOut.date;
+
+    return isInSelectedYearRange && isInSelectedMonthRange && isInSelectedDateRange;
+  };
+
   return (
     <S.Container>
-      <S.CalendarTitle>{`${months[activeMonth]} ${activeYear}`}</S.CalendarTitle>
+      <S.CalendarTitle>{`${months[month]} ${year}`}</S.CalendarTitle>
       <S.WeekContainer>
         {daysOfWeek.map(day => (
-          <S.DayItem key={`day-${day}`}>{day}</S.DayItem>
+          <S.WeekDayItem key={`day-${day}`}>{day}</S.WeekDayItem>
         ))}
       </S.WeekContainer>
       <S.WeekContainer>
         {dates.map(({ id, date }) => (
           <S.DayItem
             key={id}
-            onClick={() => handleClickDay({ year: activeYear, month: activeMonth, date })}
+            onClick={() => handleClickDay({ year, month, date })}
+            onMouseOver={() => handleMouseOverDay({ year, month, date })}
+            checkIn={checkIn}
+            checkOut={checkOut}
+            isSelectedDatePoint={checkIsSelectedDatePoint(date)}
+            isSelectedDateRange={checkIsSelectedDateRange(date)}
           >
             {date}
           </S.DayItem>
@@ -57,31 +91,26 @@ export default function Calendar({ activeYear, activeMonth, handleClickDay }: Ca
   );
 }
 
-const getCalendarInfo = ({ activeYear, activeMonth }: CalendarInfoType): CalendarDateProps[] => {
-  const prevMonthLastFullDate = new Date(activeYear, activeMonth, 0);
+const getCalendarInfo = ({ year, month }: CalendarInfoType): CalendarDateProps[] => {
+  const prevMonthLastFullDate = new Date(year, month, 0);
   const prevMonthLastDay = prevMonthLastFullDate.getDay();
   const prevMonthLastDate = prevMonthLastFullDate.getDate();
 
-  const activeMonthLastFullDate = new Date(activeYear, activeMonth + 1, 0);
+  const activeMonthLastFullDate = new Date(year, month + 1, 0);
   const activeMonthLastDay = activeMonthLastFullDate.getDay();
   const activeMonthLastDate = activeMonthLastFullDate.getDate();
 
-  const prevMonthDates = getPrevMonthLastWeek(
-    prevMonthLastDay,
-    prevMonthLastDate,
-    activeYear,
-    activeMonth - 1,
-  );
+  const prevMonthDates = getPrevMonthLastWeek(prevMonthLastDay, prevMonthLastDate, year, month - 1);
 
   const currentMonthDates = getDates({
     length: activeMonthLastDate,
-    year: activeYear,
-    month: activeMonth,
+    year,
+    month,
     addedDate: 0,
     isAciveMonth: true,
   });
 
-  const nextMonthDates = getNextMonthFirstWeek(activeMonthLastDay, activeYear, activeMonth + 1);
+  const nextMonthDates = getNextMonthFirstWeek(activeMonthLastDay, year, month + 1);
 
   return prevMonthDates.concat(currentMonthDates, nextMonthDates);
 };

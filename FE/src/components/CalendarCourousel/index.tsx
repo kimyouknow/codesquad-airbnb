@@ -32,6 +32,7 @@ export interface SelectedDateType {
   year: number;
   month: number;
   date: number;
+  isSelectedDone?: boolean;
 }
 
 export default function CalendarCaoursel({
@@ -63,6 +64,7 @@ export default function CalendarCaoursel({
     year: initYear,
     month: initMonth,
     date: currentDate + 1,
+    isSelectedDone: false,
   });
 
   const calendarHeaderDate = getMonthsWithYear(slideCardsLength, activeMonth, initYear);
@@ -109,10 +111,16 @@ export default function CalendarCaoursel({
       year: 0,
       month: 0,
       date: 0,
+      isSelectedDone: false,
     });
   };
 
-  const updateCheckOutWhenWithinRange = ({ year, month, date }: SelectedDateType) => {
+  const updateCheckOutWhenWithinRange = ({
+    year,
+    month,
+    date,
+    isSelectedDone,
+  }: SelectedDateType) => {
     setCheckIn({
       ...checkIn,
       year: checkIn.year,
@@ -125,20 +133,38 @@ export default function CalendarCaoursel({
       year,
       month,
       date,
+      isSelectedDone: isSelectedDone !== undefined ? isSelectedDone : checkOut.isSelectedDone,
     });
   };
 
   const handleClickDay = ({ year, month, date }: SelectedDateType) => {
     const isPossibleYear = checkIn.year <= year;
     const isPossibleMonth = checkIn.month <= month;
-    const isResetedCheckIn = checkIn.year === 0 && checkIn.month === 0 && checkIn.year === 0;
-    const isResetedCheckOut = checkOut.year === 0 && checkOut.month === 0 && checkOut.year === 0;
+    const isResetedCheckIn = checkIn.year === 0 && checkIn.month === 0 && checkIn.date === 0;
+    const isResetedCheckOut = checkOut.year === 0 && checkOut.month === 0 && checkOut.date === 0;
 
     if (!isPossibleYear || !isPossibleMonth || checkIn.date > date || isResetedCheckIn) {
       updateCheckInWhenPriorToCheckIn({ year, month, date });
       return;
     }
 
+    if (checkIn.date <= date || isResetedCheckOut) {
+      updateCheckOutWhenWithinRange({ year, month, date, isSelectedDone: true });
+      return;
+    }
+  };
+
+  const handleMouseOverDay = ({ year, month, date }: SelectedDateType) => {
+    const isPossibleYear = checkIn.year <= year;
+    const isPossibleMonth = checkIn.month <= month;
+    const isResetedCheckIn = checkIn.year === 0 && checkIn.month === 0 && checkIn.date === 0;
+    const isResetedCheckOut = checkOut.year === 0 && checkOut.month === 0 && checkOut.date === 0;
+
+    if (!isPossibleYear || !isPossibleMonth || isResetedCheckIn || checkOut.isSelectedDone) {
+      return;
+    }
+
+    // TODO : handleClickDay와 중복제거
     if (checkIn.date <= date || isResetedCheckOut) {
       updateCheckOutWhenWithinRange({ year, month, date });
       return;
@@ -190,7 +216,14 @@ export default function CalendarCaoursel({
                 itemGap={itemGap}
                 showingCardNum={showingCardNum}
               >
-                <Calendar activeMonth={month} activeYear={year} handleClickDay={handleClickDay} />
+                <Calendar
+                  month={month}
+                  year={year}
+                  handleClickDay={handleClickDay}
+                  handleMouseOverDay={handleMouseOverDay}
+                  checkIn={checkIn}
+                  checkOut={checkOut}
+                />
               </S.Item>
             ))}
           </S.ItemContainer>
