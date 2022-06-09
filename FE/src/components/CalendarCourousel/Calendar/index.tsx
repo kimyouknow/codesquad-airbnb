@@ -49,6 +49,7 @@ export default function Calendar({
 }: CalendarProps) {
   const dates = getCalendarInfo({ year, month });
 
+  // TODO : 로직은 최하단으로 이동하기
   const checkIsSelectedDatePoint = (date: number) => {
     const isEqualWithCheckIn =
       checkIn.year === year && checkIn.month === month && checkIn.date === date;
@@ -59,11 +60,28 @@ export default function Calendar({
   };
 
   const checkIsSelectedDateRange = (date: number) => {
-    const isInSelectedYearRange = checkIn.year <= year && year <= checkOut.year;
-    const isInSelectedMonthRange = checkIn.month <= month && month <= checkOut.month;
-    const isInSelectedDateRange = checkIn.date < date && date < checkOut.date;
+    const checkInConvertedNum = date2convertedNum({
+      year: checkIn.year,
+      month: checkIn.month,
+      date: checkIn.date,
+    });
 
-    return isInSelectedYearRange && isInSelectedMonthRange && isInSelectedDateRange;
+    const currentDateConvertedNum = date2convertedNum({
+      year,
+      month,
+      date,
+    });
+
+    const checkOutConvertedNum = date2convertedNum({
+      year: checkOut.year,
+      month: checkOut.month,
+      date: checkOut.date,
+    });
+
+    return (
+      checkInConvertedNum < currentDateConvertedNum &&
+      currentDateConvertedNum < checkOutConvertedNum
+    );
   };
 
   return (
@@ -174,3 +192,18 @@ const getDate = ({ year, month, date, isAciveMonth }: DateProps): CalendarDatePr
 });
 
 const isSaturDay = (numberOfDay: number) => numberOfDay !== saturdayNumber;
+
+const date2convertedNum = ({ year, month, date }: FullDateProps) => {
+  const ONE_YEAR_DAY = 365;
+  const fromJanToCurrentMonth = Array.from({ length: month }, (_, index) => index);
+  const totalDatesFromJanToPreviousMonth = fromJanToCurrentMonth
+    .map(currentMonth => new Date(year, currentMonth, 0).getDate())
+    .reduce((accumulatedDates, currentDates) => accumulatedDates + currentDates, 0);
+
+  /**
+   * 2022.5.8이라고 하면
+   * 2022 * 365 + 1, 2 3, 4월달의 모든일(31, 28, 30, 29) + 8일 -> 738,156
+   */
+
+  return year * ONE_YEAR_DAY + totalDatesFromJanToPreviousMonth + date;
+};

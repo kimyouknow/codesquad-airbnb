@@ -143,6 +143,13 @@ export default function CalendarCaoursel({
     const isResetedCheckIn = checkIn.year === 0 && checkIn.month === 0 && checkIn.date === 0;
     const isResetedCheckOut = checkOut.year === 0 && checkOut.month === 0 && checkOut.date === 0;
 
+    const isOverNewYear = checkIn.year < checkOut.year && checkIn.month > checkOut.month;
+
+    if (isOverNewYear) {
+      updateCheckOutWhenWithinRange({ year, month, date, isSelectedDone: true });
+      return;
+    }
+
     if (!isPossibleYear || !isPossibleMonth || checkIn.date > date || isResetedCheckIn) {
       updateCheckInWhenPriorToCheckIn({ year, month, date });
       return;
@@ -155,12 +162,10 @@ export default function CalendarCaoursel({
   };
 
   const handleMouseOverDay = ({ year, month, date }: SelectedDateType) => {
-    const isPossibleYear = checkIn.year <= year;
-    const isPossibleMonth = checkIn.month <= month;
     const isResetedCheckIn = checkIn.year === 0 && checkIn.month === 0 && checkIn.date === 0;
     const isResetedCheckOut = checkOut.year === 0 && checkOut.month === 0 && checkOut.date === 0;
 
-    if (!isPossibleYear || !isPossibleMonth || isResetedCheckIn || checkOut.isSelectedDone) {
+    if (isResetedCheckIn || checkOut.isSelectedDone) {
       return;
     }
 
