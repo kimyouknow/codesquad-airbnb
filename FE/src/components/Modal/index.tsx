@@ -4,7 +4,7 @@ import Potal from '@/components/Modal/Potal';
 
 import * as S from './style';
 
-interface ModalProps {
+export interface ModalProps {
   wrapperId: string;
   isOpen: boolean;
   children: ReactNode;

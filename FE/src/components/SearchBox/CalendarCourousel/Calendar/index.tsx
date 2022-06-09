@@ -1,4 +1,4 @@
-import { SelectedDateType } from '@/components/SearchBox/CalendarModal/CalendarCourousel';
+import { SelectedDateType } from '@/components/SearchBox/CalendarCourousel';
 import { months, daysOfWeek, saturdayNumber } from '@/constants/constants';
 
 import * as S from './style';
