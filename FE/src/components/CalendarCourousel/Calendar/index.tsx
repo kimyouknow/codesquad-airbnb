@@ -75,7 +75,7 @@ export default function Calendar({
         ))}
       </S.WeekDayItemContainer>
       <S.WeekContainer onMouseLeave={handleMouseLeaveCalendar}>
-        {dates.map(({ id, date }) => (
+        {dates.map(({ id, date, isAciveMonth }) => (
           <S.DayItem
             key={id}
             onClick={() => handleClickDay({ year, month, date })}
@@ -84,6 +84,7 @@ export default function Calendar({
             checkOut={checkOut}
             isSelectedDatePoint={checkIsSelectedDatePoint(date)}
             isSelectedDateRange={checkIsSelectedDateRange(date)}
+            isAciveMonth={isAciveMonth}
           >
             {date}
           </S.DayItem>

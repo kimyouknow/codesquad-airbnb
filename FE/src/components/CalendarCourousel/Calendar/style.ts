@@ -43,13 +43,18 @@ export const DayItem = styled.li<{
   checkOut: FullDateProps;
   isSelectedDatePoint: boolean;
   isSelectedDateRange: boolean;
+  isAciveMonth: boolean;
 }>`
   ${textCenter}
   :hover {
     background-color: wheat;
   }
-  background-color: ${({ isSelectedDatePoint }) => (isSelectedDatePoint ? '#808080' : '')};
-  background-color: ${({ isSelectedDateRange }) => (isSelectedDateRange ? '#D3D3D3' : '')};
+  background-color: ${({ isSelectedDatePoint, isAciveMonth }) =>
+    isSelectedDatePoint && isAciveMonth ? '#808080' : ''};
+  background-color: ${({ isSelectedDateRange, isAciveMonth }) =>
+    isSelectedDateRange && isAciveMonth ? '#D3D3D3' : ''};
+  color: ${({ isAciveMonth }) => (isAciveMonth ? 'black' : '#D3D3D3')};
+  pointer-events: ${({ isAciveMonth }) => (isAciveMonth ? 'all' : 'none')};
   border-radius: 50%;
   margin: 10px;
 `;
