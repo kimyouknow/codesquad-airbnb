@@ -172,6 +172,10 @@ export default function CalendarCaoursel({
   };
 
   const handleMouseLeaveCalendar = () => {
+    if (checkOut.isSelectedDone) {
+      return;
+    }
+
     setCheckOut({
       ...checkOut,
       year: 0,
