@@ -5,16 +5,16 @@ import Potal from '@/components/Modal/Potal';
 import * as S from './style';
 
 interface ModalProps {
+  wrapperId: string;
   isOpen: boolean;
-  parent?: ReactNode;
   children: ReactNode;
   onClose: () => void;
 }
 
-export default function Modal({ isOpen, parent, onClose, children }: ModalProps) {
+export default function Modal({ wrapperId, isOpen, onClose, children }: ModalProps) {
   if (!isOpen) return null;
   return (
-    <Potal parent={parent}>
+    <Potal wrapperId={wrapperId}>
       <S.Overlay onClick={onClose}>
         <S.Content onClick={event => event.stopPropagation()}>
           <S.CloseButton onClick={onClose}>&times;</S.CloseButton>

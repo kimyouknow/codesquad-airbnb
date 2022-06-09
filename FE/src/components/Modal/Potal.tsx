@@ -5,16 +5,16 @@ import useScrollLock from '@/hooks/useScrollLock';
 
 // TODO: 일단 가장 넓은 범위의 ReactNode 타입 사용 (추가 공부 필요)
 export interface PortalProps {
-  parent: ReactNode | null | undefined;
   children: ReactNode;
+  wrapperId: string;
 }
 
-export default function Potal({ parent, children }: PortalProps) {
+export default function Potal({ children, wrapperId }: PortalProps) {
   useScrollLock(true); // TODO: advanced 버전으로 변경해보기
 
-  const potalContainer = parent || getRootElementById('modal');
+  const potalContainer = getRootElementById(wrapperId);
 
-  return createPortal(children, potalContainer as HTMLElement);
+  return createPortal(children, potalContainer);
 }
 
 const getRootElementById = (documentId: string) => {

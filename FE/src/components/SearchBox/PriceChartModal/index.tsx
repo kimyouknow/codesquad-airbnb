@@ -17,7 +17,7 @@ export default function PriceChartModal({ isModalOpen, handleOpenModal }: Calend
     setChartInfo(PriceChartData);
   }, []);
   return (
-    <Modal isOpen={isModalOpen} onClose={handleOpenModal}>
+    <Modal wrapperId="price" isOpen={isModalOpen} onClose={handleOpenModal}>
       {chartInfo && (
         <PriceChart
           chartInfo={chartInfo}
