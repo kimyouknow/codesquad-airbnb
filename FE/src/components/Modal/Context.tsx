@@ -1,24 +1,36 @@
-import { createContext, useMemo, useState } from 'react';
+import { createContext, ReactNode, useMemo, useState } from 'react';
 
-import { ModalDispatchActionType, ModalProps, ModalStateType } from '@/components/Modal/types';
+interface ModalProviderProps {
+  children: ReactNode;
+}
 
-export const ModalStateContext = createContext<ModalStateType[] | null>(null);
+export interface ModalStateType {
+  Component: ReactNode;
+  key: string;
+}
+
+export interface ModalDispatchActionType {
+  open: (key: string) => void;
+  close: (key: string) => void;
+}
+
+export const ModalStateContext = createContext<string[] | null>(null);
 
 export const ModalDispatchContext = createContext<ModalDispatchActionType>({
   open: () => {},
   close: () => {},
 });
 
-export default function ModalProvider({ children }: ModalProps) {
-  const [openModals, setOpenModals] = useState<ModalStateType[]>([]);
+export default function ModalProvider({ children }: ModalProviderProps) {
+  const [openModals, setOpenModals] = useState<string[]>([]);
 
-  const open = ({ Component, key }: ModalStateType) => {
-    setOpenModals(modals => [...modals, { Component, key }]);
+  const open = (key: string) => {
+    setOpenModals(modals => [...modals, key]);
   };
 
   const close = (key: string) => {
     setOpenModals(modals => {
-      return modals.filter(modal => modal.key === key);
+      return modals.filter(modal => modal === key);
     });
   };
 

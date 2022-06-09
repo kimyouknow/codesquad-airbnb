@@ -1,11 +1,15 @@
+import { ReactNode } from 'react';
+
 import Potal from '@/components/Modal/Potal';
-import { PortalProps } from '@/components/Modal/types';
-import useModal from '@/components/Modal/useModal';
 
 import * as S from './style';
 
-export default function Modal({ parent, children }: PortalProps) {
-  const [openModal, closeModal] = useModal();
+interface ModalProps {
+  parent: ReactNode | null | undefined;
+  children: ReactNode;
+}
+
+export default function Modal({ parent, children }: ModalProps) {
   const onClose = () => {};
   return (
     <Potal parent={parent}>

@@ -1,14 +1,13 @@
 import { useContext } from 'react';
 
 import { ModalDispatchContext } from '@/components/Modal/Context';
-import { ModalStateType } from '@/components/Modal/types';
 
-export default function useModal() {
+export default function useModal(key: string) {
   const { open, close } = useContext(ModalDispatchContext);
-  const openModal = ({ Component, key }: ModalStateType) => {
-    open({ Component, key });
+  const openModal = () => {
+    open(key);
   };
-  const closeModal = (key: string) => {
+  const closeModal = () => {
     close(key);
   };
   return [openModal, closeModal];
