@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import Potal from '@/components/Modals/Potal';
+import Potal from '@/components/Modal/Potal';
 
 import * as S from './style';
 

@@ -1,4 +1,4 @@
-import Modal from '@/components/Modals/Modal';
+import Modal from '@/components/Modal';
 import CalendarCaoursel from '@/components/SearchBox/CalendarModal/CalendarCourousel';
 
 interface CalendarModalProps {
