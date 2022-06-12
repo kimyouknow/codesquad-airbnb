@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
-import Chart from '@/components/Chart';
+import Chart from '@/components/PriceChart/Chart';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '@/components/PriceChart/constants';
+import MultiRangerSlider from '@/components/PriceChart/MultiRangerSlider';
+import PriceInfo from '@/components/PriceChart/PriceInfo';
 
 import * as S from './style';
 
@@ -21,23 +23,12 @@ interface PriceChartProps {
 export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChartProps) {
   const xDataset = chartInfo.map(element => element[axis.x]);
   const yDataset = chartInfo.map(element => element[axis.y]);
+  const minimunX = Math.min(...xDataset);
   const maximumX = Math.max(...xDataset);
   const maximumY = Math.max(...yDataset);
 
   const [leftThumbX, setLeftThumbX] = useState(0);
   const [rightThumbX, setRightThumbX] = useState(maximumX);
-
-  // FIXME: handleMaxPriceChange와 handleMinPriceChange 내부 로직이 비슷한 흐름인데 중복을 줄일 수 없을까?
-  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      target: { value },
-    } = event;
-    const newValue = Number(value);
-    if (newValue <= leftThumbX) {
-      setLeftThumbX(newValue - xStep);
-    }
-    setRightThumbX(newValue);
-  };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -50,59 +41,48 @@ export default function PriceChart({ chartInfo, axis, xStep, yStep }: PriceChart
     setLeftThumbX(newValue);
   };
 
-  const leftIndex = xDataset.findIndex(element => element === leftThumbX);
-  const leftY = yDataset[leftIndex];
-
-  const revisedRigthX = calculateXRatio(rightThumbX, maximumX, CANVAS_WIDTH);
-  const revisedLeftX = calculateXRatio(leftThumbX, maximumX, CANVAS_WIDTH);
-  const revisedLeftY = calculateYRatio(leftY, maximumY, CANVAS_HEIGHT);
-
-  const moveLeftThumbX = (leftThumbX / maximumX) * 100;
-  const moveRightThumbX = 100 - (rightThumbX / maximumX) * 100;
+  const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event;
+    const newValue = Number(value);
+    if (newValue <= leftThumbX) {
+      setLeftThumbX(newValue - xStep);
+    }
+    setRightThumbX(newValue);
+  };
+  // FIXME: react에서 Array.prototype.customMehtod 같은 체이닝을 어떻게 선언할까?
+  const selectablePriceDataset = xDataset.filter(x => leftThumbX <= x && x <= rightThumbX);
+  const selectablePriceAverage =
+    selectablePriceDataset.reduce((a, b) => a + b, 0) / selectablePriceDataset.length;
 
   return (
-    <S.Container containerWidth={CANVAS_HEIGHT} containerHeight={CANVAS_WIDTH}>
-      <Chart
-        xDataset={xDataset}
-        yDataset={yDataset}
+    <S.Container>
+      <PriceInfo
+        minimunX={minimunX}
         maximumX={maximumX}
-        maximumY={maximumY}
-        leftThumbX={leftThumbX}
-        rightThumbX={rightThumbX}
-        size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
-        revisedValues={{ revisedRigthX, revisedLeftX, revisedLeftY }}
+        selectablePriceAverage={selectablePriceAverage}
       />
-      <label>최소</label>
-      <S.SliderController
-        type="range"
-        value={leftThumbX}
-        step={xStep}
-        min={0}
-        max={maximumX}
-        onChange={handleMinPriceChange}
-      />
-      <br />
-      <label>최대</label>
-      <S.SliderController
-        type="range"
-        value={rightThumbX}
-        step={xStep}
-        min={0}
-        max={maximumX}
-        onChange={handleMaxPriceChange}
-      />
-      <S.VirtualSlider>
-        <S.Track></S.Track>
-        <S.Range moveLeftThumbX={moveLeftThumbX} moveRightThumbX={moveRightThumbX}></S.Range>
-        <S.LeftThumb moveLeftThumbX={moveLeftThumbX}></S.LeftThumb>
-        <S.RightThumb moveRightThumbX={moveRightThumbX}></S.RightThumb>
-      </S.VirtualSlider>
+      <S.ChartContainer>
+        <Chart
+          xDataset={xDataset}
+          yDataset={yDataset}
+          size={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT }}
+          hasSlider
+          leftThumbX={leftThumbX}
+          rightThumbX={rightThumbX}
+        />
+        <MultiRangerSlider
+          style={{ width: CANVAS_WIDTH }}
+          step={xStep}
+          max={maximumX}
+          min={0}
+          leftValue={leftThumbX}
+          rightValue={rightThumbX}
+          leftOnChange={handleMinPriceChange}
+          rightOnChange={handleMaxPriceChange}
+        />
+      </S.ChartContainer>
     </S.Container>
   );
 }
-
-const calculateXRatio = (rawX: number, currentMaximumX: number, width: number): number =>
-  (rawX / currentMaximumX) * width;
-
-const calculateYRatio = (rawY: number, currentMaximumY: number, height: number): number =>
-  height - (rawY / currentMaximumY) * height;
